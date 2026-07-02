@@ -1,0 +1,25 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django database
+db.sqlite3
+
+# Environments
+.venv/
+venv/
+ENV/
+env/
+leo/
+
+# IDE / Editor files
+.vscode/
+.idea/
+.project
+.pydevproject
+.settings/
+.agents/
+.gemini/
+antigravity-ide/
