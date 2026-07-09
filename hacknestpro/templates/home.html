@@ -1670,81 +1670,14 @@
         }
 
         .why-nest {
-            padding: 80px 0;
-        }
-
-        .why-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            max-width: 1080px;
-            margin: 40px auto 0 auto;
-        }
-
-        .why-card {
+            padding: 100px 0;
             position: relative;
-            background: #111010;
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 0;
-            padding: 30px 24px;
-            display: flex;
-            flex-direction: column;
-            align-items: flex-start;
-            text-align: left;
-            transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        .why-card:hover {
-            transform: translateY(-4px);
-            border-color: var(--agency-accent);
-            box-shadow: 0 0 20px rgba(255, 87, 34, 0.12);
-        }
-
-        .why-icon {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            width: 44px;
-            height: 44px;
-            border-radius: 0;
-            background: rgba(255, 87, 34, 0.08);
-            color: var(--agency-accent);
-            border: 1px solid rgba(255, 87, 34, 0.20);
-            margin-bottom: 20px;
-            transition: transform 0.3s ease;
-        }
-
-        .why-card:hover .why-icon {
-            transform: scale(1.05);
-        }
-
-        .why-content h3 {
-            font-family: 'Poppins', sans-serif;
-            font-size: 18px;
-            font-weight: 700;
-            margin-bottom: 10px;
-            color: #ffffff;
-        }
-
-        .why-content p {
-            font-family: 'Poppins', sans-serif;
-            color: var(--agency-text-muted);
-            font-size: 13.5px;
-            line-height: 1.6;
-            font-weight: 400;
-        }
-
-        @media (max-width: 991px) {
-            .why-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 768px) {
-            .why-grid {
-                grid-template-columns: 1fr;
-                gap: 20px;
-            }
+        .why-text-item, .why-text-arrow {
+            opacity: 0;
+            transform: translateY(30px);
+            will-change: transform, opacity;
         }
 
         /* ── Compact Steps Strip ───────────────────── */
@@ -2690,9 +2623,38 @@
 
 
                 <!-- Why HackNest? Section -->
-                <section class="why-nest">
-                    <div class="section-header reveal reveal-fade-up" style="text-align: center; margin-bottom: 50px;">
+                <section class="why-nest" style="padding: 100px 0;">
+                    <div class="section-header reveal reveal-fade-up" style="text-align: center; margin-bottom: 80px;">
                         <h2>WHY<br><span>HACKNEST?</span></h2>
+                    </div>
+
+                    <div class="why-vertical-stack" style="max-width: 800px; margin: 0 auto; display: flex; flex-direction: column; align-items: center; gap: 40px; text-align: center;">
+                        <!-- Item 1 -->
+                        <div class="why-text-item" style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="why-item-num" style="font-family: var(--agency-font-display); font-size: 54px; color: var(--agency-accent); line-height: 1; margin-bottom: 12px; font-weight: 900;">01</div>
+                            <h3 style="font-family: var(--agency-font-display); font-size: 32px; color: #ffffff; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">Discover</h3>
+                            <p style="font-family: 'Poppins', sans-serif; font-size: 16px; color: var(--agency-text-muted); max-width: 600px; line-height: 1.7; margin: 0;">Find hackathons from different clubs and register easily—all in one place.</p>
+                        </div>
+
+                        <!-- Arrow 1 -->
+                        <div class="why-text-arrow" style="font-size: 28px; color: var(--agency-accent); font-weight: 700; margin: 20px 0;">↓</div>
+
+                        <!-- Item 2 -->
+                        <div class="why-text-item" style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="why-item-num" style="font-family: var(--agency-font-display); font-size: 54px; color: var(--agency-accent); line-height: 1; margin-bottom: 12px; font-weight: 900;">02</div>
+                            <h3 style="font-family: var(--agency-font-display); font-size: 32px; color: #ffffff; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">Collaborate</h3>
+                            <p style="font-family: 'Poppins', sans-serif; font-size: 16px; color: var(--agency-text-muted); max-width: 600px; line-height: 1.7; margin: 0;">Create or join teams and work together on innovative projects.</p>
+                        </div>
+
+                        <!-- Arrow 2 -->
+                        <div class="why-text-arrow" style="font-size: 28px; color: var(--agency-accent); font-weight: 700; margin: 20px 0;">↓</div>
+
+                        <!-- Item 3 -->
+                        <div class="why-text-item" style="display: flex; flex-direction: column; align-items: center;">
+                            <div class="why-item-num" style="font-family: var(--agency-font-display); font-size: 54px; color: var(--agency-accent); line-height: 1; margin-bottom: 12px; font-weight: 900;">03</div>
+                            <h3 style="font-family: var(--agency-font-display); font-size: 32px; color: #ffffff; text-transform: uppercase; letter-spacing: 1.5px; margin-bottom: 15px;">Showcase</h3>
+                            <p style="font-family: 'Poppins', sans-serif; font-size: 16px; color: var(--agency-text-muted); max-width: 600px; line-height: 1.7; margin: 0;">Submit your project, receive feedback, view results, and download certificates.</p>
+                        </div>
                     </div>
                 </section>
 
@@ -3043,6 +3005,21 @@
                     end: "bottom 70%",
                     scrub: true
                 }
+            });
+ 
+            /* ── Why HackNest Vertical Stack Sequential Reveal ── */
+            const whyItems = gsap.utils.toArray(".why-text-item, .why-text-arrow");
+            whyItems.forEach((item) => {
+                gsap.to(item, {
+                    opacity: 1,
+                    y: 0,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: item,
+                        start: "top 82%",
+                        toggleActions: "play none none none"
+                    }
+                });
             });
 
             // --- Scramble Text Hover Effect ---
