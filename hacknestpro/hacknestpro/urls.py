@@ -17,16 +17,31 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
+from accounts.views import login_view, signup_view, orilogin_view, studenthome_view, otp_verify_view, profile_view, admin_view
 
 
 def home(request):
     return render(request, 'home.html')
 
 
+from django.conf import settings
+from django.conf.urls.static import static
+
 urlpatterns = [
     path('', home, name='home'),
     path('admin/', admin.site.urls),
+    path('login/', login_view, name='login'),
+    path('signup/', signup_view, name='signup'),
+    path('orilogin/', orilogin_view, name='orilogin'),
+    path('studenthome/', studenthome_view, name='studenthome'),
+    path('otp-verify/', otp_verify_view, name='otp_verify'),
+    path('profile/', profile_view, name='profile'),
+    path('admin-view/', admin_view, name='admin_view'),
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
 
 
 

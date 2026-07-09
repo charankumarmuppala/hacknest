@@ -1,0 +1,784 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Profile | HackNest</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #ffffff;
+            --text-main: #111827;
+            --text-muted: #6b7280;
+            --border: #e5e7eb;
+            --primary: #111827;
+            --primary-hover: #030712;
+            --cyan: #06b6d4;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            background-color: var(--bg);
+            color: var(--text-main);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+
+        /* ── Profile Dropdown Card ── */
+        .profile-dropdown-card {
+            position: absolute;
+            top: calc(100% + 15px);
+            right: 0;
+            width: 240px;
+            background: #ffffff;
+            border: 1px solid #e5e7eb;
+            border-radius: 16px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 16px;
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            z-index: 100;
+            cursor: default;
+            transition: all 0.3s ease;
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+
+        .profile-dropdown-card.active {
+            display: flex;
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .dropdown-header {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .dropdown-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            text-align: left;
+        }
+
+        .dropdown-email {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-family: 'Poppins', sans-serif;
+            text-align: left;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #e5e7eb;
+            margin: 4px 0;
+        }
+
+        .dropdown-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+            padding: 0;
+            margin: 0;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 12px;
+            color: #374151;
+            text-decoration: none;
+            font-size: 13.5px;
+            font-weight: 500;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: #f3f4f6;
+            color: var(--text-main);
+        }
+
+        .dropdown-item svg {
+            color: var(--text-muted);
+            transition: color 0.2s ease;
+        }
+
+        .dropdown-item:hover svg {
+            color: var(--text-main);
+        }
+
+        .logout-item:hover {
+            background: rgba(239, 68, 68, 0.05);
+            color: #ef4444;
+        }
+
+        .logout-item:hover svg {
+            color: #ef4444;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 40px;
+        }
+
+        /* Navbar */
+        .macbease-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+            border-bottom: 1px solid var(--border);
+            position: relative;
+            z-index: 10;
+            margin-bottom: 40px;
+        }
+
+        .macbease-logo {
+            font-family: 'Poppins', sans-serif;
+            font-size: 24px;
+            font-weight: 800;
+            color: #000000;
+            letter-spacing: -0.5px;
+            text-decoration: none;
+        }
+
+        .macbease-logo span {
+            background: linear-gradient(180deg, #38bdf8 30%, #0ea5e9 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .macbease-nav-links {
+            display: flex;
+            list-style: none;
+            gap: 32px;
+        }
+
+        .macbease-nav-links a {
+            color: var(--text-muted);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 15px;
+            transition: color 0.2s ease;
+        }
+
+        .macbease-nav-links a:hover {
+            color: var(--text-main);
+        }
+
+        /* Settings Panels */
+        .section-header {
+            font-family: 'Poppins', sans-serif;
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 24px;
+        }
+
+        .divider {
+            border: 0;
+            border-top: 1px solid var(--border);
+            margin: 36px 0;
+        }
+
+        /* Profile photo block */
+        .photo-settings-row {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 28px;
+        }
+
+        .photo-preview {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            overflow: hidden;
+            background: linear-gradient(135deg, #06b6d4, #3b82f6);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--border);
+        }
+
+        .photo-preview img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-fallback-initial {
+            font-family: 'Poppins', sans-serif;
+            font-size: 32px;
+            font-weight: 700;
+            color: #ffffff;
+            text-transform: uppercase;
+        }
+
+        .photo-btn-group {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .photo-btn-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .btn-change-image {
+            background-color: var(--primary);
+            color: #ffffff;
+            font-size: 13.5px;
+            font-weight: 600;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-change-image:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .btn-remove-image {
+            background-color: #f3f4f6;
+            color: var(--text-main);
+            font-size: 13.5px;
+            font-weight: 500;
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .btn-remove-image:hover {
+            background-color: #e5e7eb;
+        }
+
+        .photo-hint {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Form Layout */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 24px;
+        }
+
+        .form-group-full {
+            grid-column: span 2;
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .form-group label {
+            font-size: 13px;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .form-input {
+            width: 100%;
+            background: #ffffff;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 12px 14px;
+            color: var(--text-main);
+            font-size: 14.5px;
+            font-family: inherit;
+            transition: all 0.2s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+        }
+
+        .form-textarea {
+            resize: vertical;
+            min-height: 90px;
+        }
+
+        /* Row layouts for Security settings */
+        .settings-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 0;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .settings-row:last-child {
+            border-bottom: none;
+        }
+
+        .row-info {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+            max-width: 70%;
+        }
+
+        .row-title {
+            font-size: 14.5px;
+            font-weight: 600;
+            color: var(--text-main);
+        }
+
+        .row-description {
+            font-size: 13px;
+            color: var(--text-muted);
+            line-height: 1.4;
+        }
+
+        .row-input-wrapper {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            justify-content: space-between;
+        }
+
+        .row-input-field {
+            flex-grow: 1;
+            max-width: 320px;
+        }
+
+        .btn-action-light {
+            background-color: #f3f4f6;
+            color: var(--text-main);
+            font-size: 13px;
+            font-weight: 600;
+            border: 1px solid #e5e7eb;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-action-light:hover {
+            background-color: #e5e7eb;
+        }
+
+        /* Toggle Switches */
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 48px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #e5e7eb;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.15);
+        }
+
+        input:checked + .toggle-slider {
+            background-color: var(--primary);
+        }
+
+        input:checked + .toggle-slider:before {
+            transform: translateX(24px);
+        }
+
+        /* Delete details style */
+        .text-red {
+            color: #b91c1c;
+        }
+
+        .btn-delete {
+            background-color: #fef2f2;
+            color: #b91c1c;
+            border: 1px solid #fee2e2;
+            font-size: 13px;
+            font-weight: 600;
+            padding: 8px 16px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-delete:hover {
+            background-color: #fee2e2;
+        }
+
+        /* Dynamic Password Form Slide Down styling */
+        .password-form-container {
+            display: none;
+            background-color: #f9fafb;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 24px;
+            margin-top: 16px;
+        }
+
+        .password-form-container.active {
+            display: block;
+        }
+
+        /* Save Button at the end of profile form */
+        .btn-save-profile {
+            background-color: var(--primary);
+            color: #ffffff;
+            font-size: 14.5px;
+            font-weight: 600;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+            margin-top: 12px;
+        }
+
+        .btn-save-profile:hover {
+            background-color: var(--primary-hover);
+        }
+
+        /* Alerts */
+        .alert {
+            padding: 14px 20px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 24px;
+            font-weight: 500;
+        }
+
+        .alert-success {
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid #10b981;
+            color: #10b981;
+        }
+
+        .alert-error {
+            background: rgba(239, 68, 68, 0.08);
+            border: 1px solid #ef4444;
+            color: #ef4444;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <!-- Navbar -->
+        <nav class="macbease-nav">
+            <a href="{% url 'studenthome' %}" class="macbease-logo">Hack<span>Nest</span>.</a>
+
+            <ul class="macbease-nav-links">
+                <li><a href="{% url 'studenthome' %}">Home</a></li>
+                <li><a href="{% url 'studenthome' %}#hackathons">Hackathons</a></li>
+                <li><a href="#">About</a></li>
+            </ul>
+
+            <div class="macbease-nav-profile" style="display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer;" onclick="document.getElementById('profile-dropdown').classList.toggle('active')">
+                <div class="profile-avatar" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #06b6d4, #3b82f6); display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; color: #ffffff; font-size: 15px; border: 1.5px solid rgba(255, 255, 255, 0.25); box-shadow: 0 0 10px rgba(6, 182, 212, 0.4); text-transform: uppercase; overflow: hidden;">
+                    {% if profile.profile_photo %}
+                        <img src="{{ profile.profile_photo.url }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
+                    {% else %}
+                        {% if user.email %}
+                            {{ user.email.0 }}
+                        {% else %}
+                            S
+                        {% endif %}
+                    {% endif %}
+                </div>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#000000" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="6 9 12 15 18 9"></polyline>
+                </svg>
+
+                <!-- Profile Dropdown Menu Card -->
+                <div id="profile-dropdown" class="profile-dropdown-card">
+                    <div class="dropdown-header">
+                        <div class="dropdown-name">
+                            {% if user.is_authenticated and user.first_name %}
+                                {{ user.first_name }} {{ user.last_name }}
+                            {% else %}
+                                Student User
+                            {% endif %}
+                        </div>
+                        <div class="dropdown-email">
+                            {% if user.is_authenticated %}
+                                {{ user.email }}
+                            {% else %}
+                                student@hacknest.com
+                            {% endif %}
+                        </div>
+                        <div style="font-size: 11px; color: #0ea5e9; font-family: 'Poppins', sans-serif; font-weight: 600; margin-top: 4px; text-align: left;">
+                            ID: {{ student_id }}
+                        </div>
+                    </div>
+                    <div class="dropdown-divider"></div>
+                    <ul class="dropdown-list">
+                        <li>
+                            <a href="{% url 'profile' %}" class="dropdown-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.1a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <span>Settings</span>
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{% url 'profile' %}?tab=security" class="dropdown-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+                                <span>Change Password</span>
+                            </a>
+                        </li>
+                        <div class="dropdown-divider"></div>
+                        <li>
+                            <a href="{% url 'login' %}" class="dropdown-item logout-item">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                                <span>Log Out</span>
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </nav>
+
+        {% if success %}
+            <div class="alert alert-success">{{ success }}</div>
+        {% endif %}
+        {% if error %}
+            <div class="alert alert-error">{{ error }}</div>
+        {% endif %}
+
+        <!-- Form main structure -->
+        <form method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="update_profile" value="1">
+
+            <!-- Section 1: My Profile -->
+            <section>
+                <h2 class="section-header">My Profile</h2>
+                
+                <div class="photo-settings-row">
+                    <div class="photo-preview">
+                        {% if profile.profile_photo %}
+                            <img src="{{ profile.profile_photo.url }}" alt="Profile Photo">
+                        {% else %}
+                            <div class="photo-fallback-initial">
+                                {% if user.email %}
+                                    {{ user.email.0 }}
+                                {% else %}
+                                    S
+                                {% endif %}
+                            </div>
+                        {% endif %}
+                    </div>
+                    <div class="photo-btn-group">
+                        <div class="photo-btn-row">
+                            <button type="button" class="btn-change-image" onclick="document.getElementById('profile_photo').click()">+ Change Image</button>
+                            <input type="file" id="profile_photo" name="profile_photo" accept="image/*" style="display: none;" onchange="this.form.submit()">
+                            
+                            {% if profile.profile_photo %}
+                                <button type="submit" name="remove_photo" value="1" class="btn-remove-image">Remove Image</button>
+                            {% endif %}
+                        </div>
+                        <p class="photo-hint">We support PNGs, JPEGs and GIFs under 2MB</p>
+                    </div>
+                </div>
+
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label for="first_name">First Name</label>
+                        <input type="text" id="first_name" name="first_name" class="form-input" value="{% if user.first_name %}{{ user.first_name }}{% endif %}" placeholder="e.g. Charan" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="last_name">Last Name</label>
+                        <input type="text" id="last_name" name="last_name" class="form-input" value="{% if user.last_name %}{{ user.last_name }}{% endif %}" placeholder="e.g. Kumar" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="college">College / University</label>
+                        <input type="text" id="college" name="college" class="form-input" value="{% if profile.college %}{{ profile.college }}{% endif %}" placeholder="e.g. Lovely Professional University">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="department">Department</label>
+                        <input type="text" id="department" name="department" class="form-input" value="{% if profile.department %}{{ profile.department }}{% endif %}" placeholder="e.g. Computer Science (CSE)">
+                    </div>
+
+                    <div class="form-group">
+                        <label for="year_of_study">Year of Study</label>
+                        <input type="text" id="year_of_study" name="year_of_study" class="form-input" value="{% if profile.year_of_study %}{{ profile.year_of_study }}{% endif %}" placeholder="e.g. 3rd Year">
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="skills">Skills (comma-separated)</label>
+                        <input type="text" id="skills" name="skills" class="form-input" value="{% if profile.skills %}{{ profile.skills }}{% endif %}" placeholder="e.g. Python, Java, JavaScript, Django">
+                    </div>
+
+                    <div class="form-group form-group-full">
+                        <label for="about_me">About Me</label>
+                        <textarea id="about_me" name="about_me" class="form-input form-textarea" placeholder="Passionate developer interested in web design, hackathons, and problem-solving.">{% if profile.about_me %}{{ profile.about_me }}{% endif %}</textarea>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn-save-profile">Save Changes</button>
+            </section>
+        </form>
+
+        <hr class="divider">
+
+        <!-- Section 2: Account Security -->
+        <section>
+            <h2 class="section-header">Account Security</h2>
+
+            <!-- Email row -->
+            <div class="settings-row" style="flex-direction: column; align-items: stretch;">
+                <div class="row-input-wrapper">
+                    <div class="form-group row-input-field">
+                        <label for="display_email">Email</label>
+                        <input type="email" id="display_email" class="form-input" value="{{ user.email }}" disabled style="background-color: #f9fafb; color: var(--text-muted);">
+                    </div>
+                    <button type="button" class="btn-action-light" onclick="toggleEmailForm()">Change email</button>
+                </div>
+
+                <!-- Inline change email form -->
+                <div id="email-form-block" class="password-form-container">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="change_email" value="1">
+                        <div style="display: flex; flex-direction: column; gap: 16px; max-width: 400px;">
+                            <div class="form-group">
+                                <label for="new_email">New Email Address</label>
+                                <input type="email" id="new_email" name="new_email" class="form-input" placeholder="e.g. newemail@gmail.com" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="email_password">Confirm with Password</label>
+                                <input type="password" id="email_password" name="email_password" class="form-input" required>
+                            </div>
+                            <button type="submit" class="btn-change-image" style="width: fit-content;">Update Email</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Password row -->
+            <div class="settings-row" style="flex-direction: column; align-items: stretch; border-bottom: none;">
+                <div class="row-input-wrapper">
+                    <div class="form-group row-input-field">
+                        <label for="display_pwd">Password</label>
+                        <input type="password" id="display_pwd" class="form-input" value="••••••••••••" disabled style="background-color: #f9fafb; color: var(--text-muted);">
+                    </div>
+                    <button type="button" class="btn-action-light" onclick="togglePasswordForm()">Change password</button>
+                </div>
+
+                <!-- Inline change password form -->
+                <div id="password-form-block" class="password-form-container">
+                    <form method="POST">
+                        {% csrf_token %}
+                        <input type="hidden" name="change_password" value="1">
+                        <div style="display: flex; flex-direction: column; gap: 16px; max-width: 400px;">
+                            <div class="form-group">
+                                <label for="current_password">Current Password</label>
+                                <input type="password" id="current_password" name="current_password" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="new_password">New Password</label>
+                                <input type="password" id="new_password" name="new_password" class="form-input" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="confirm_password">Confirm New Password</label>
+                                <input type="password" id="confirm_password" name="confirm_password" class="form-input" required>
+                            </div>
+                            <button type="submit" class="btn-change-image" style="width: fit-content;">Update Password</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+        </section>
+    </div>
+
+    <script>
+        // Close profile dropdown when clicking outside
+        document.addEventListener("click", (e) => {
+            const profileContainer = document.querySelector(".macbease-nav-profile");
+            const dropdown = document.getElementById("profile-dropdown");
+            if (profileContainer && dropdown && !profileContainer.contains(e.target)) {
+                dropdown.classList.remove("active");
+            }
+        });
+
+        // Toggle Password Change form container
+        function togglePasswordForm() {
+            const block = document.getElementById('password-form-block');
+            block.classList.toggle('active');
+        }
+
+        // Toggle Email Change form container
+        function toggleEmailForm() {
+            const block = document.getElementById('email-form-block');
+            block.classList.toggle('active');
+        }
+
+        // Auto-open password block if directed from drop down parameters
+        window.addEventListener('DOMContentLoaded', () => {
+            const params = new URLSearchParams(window.location.search);
+            const tab = params.get('tab');
+            if (tab === 'security') {
+                document.getElementById('password-form-block').classList.add('active');
+                document.getElementById('password-form-block').scrollIntoView({ behavior: 'smooth' });
+            }
+        });
+    </script>
+</body>
+
+</html>
