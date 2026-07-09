@@ -1667,115 +1667,75 @@
         .why-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 40px 30px;
-            margin-top: 40px;
+            gap: 24px;
+            max-width: 1080px;
+            margin: 40px auto 0 auto;
         }
 
         .why-card {
             position: relative;
-            padding: 45px 25px 25px 25px;
-            border-radius: 12px;
-            border: 2px dashed rgba(26, 15, 48, 0.15);
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.25);
+            background: #111010;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0;
+            padding: 30px 24px;
             display: flex;
             flex-direction: column;
-            align-items: center;
-            text-align: center;
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1),
-                box-shadow 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            align-items: flex-start;
+            text-align: left;
+            transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
-        /* Tape pseudo-element */
-        .why-card::before {
-            content: '';
-            position: absolute;
-            top: -10px;
-            left: 50%;
-            transform: translateX(-50%) rotate(-1.5deg);
-            width: 70px;
-            height: 24px;
-            background: rgba(255, 255, 255, 0.4);
-            backdrop-filter: blur(2px);
-            border-radius: 2px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-            z-index: 2;
-        }
-
-        /* Rotations & Background Colors */
-        .why-card:nth-child(1) {
-            background: #ebdccb;
-            transform: rotate(-1.5deg);
-        }
-
-        .why-card:nth-child(2) {
-            background: #e3b8be;
-            transform: rotate(1.2deg);
-        }
-
-        .why-card:nth-child(3) {
-            background: #b6c4db;
-            transform: rotate(-1deg);
-        }
-
-        .why-card:nth-child(4) {
-            background: #b2d2bd;
-            transform: rotate(1.5deg);
-        }
-
-        .why-card:nth-child(5) {
-            background: #cab7d9;
-            transform: rotate(-1.2deg);
-        }
-
-        .why-card:nth-child(6) {
-            background: #d9beb0;
-            transform: rotate(0.8deg);
-        }
-
-        /* Hover Behavior */
         .why-card:hover {
-            transform: scale(1.04) rotate(0deg) !important;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.4);
-            z-index: 10;
+            transform: translateY(-4px);
+            border-color: var(--agency-accent);
+            box-shadow: 0 0 20px rgba(255, 87, 34, 0.12);
         }
 
         .why-icon {
-            position: absolute;
-            top: -20px;
-            left: 50%;
-            transform: translateX(-50%);
             display: flex;
             justify-content: center;
             align-items: center;
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            background: #080418;
-            color: #ffffff;
-            border: 2.5px solid #ffffff;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-            z-index: 3;
-            transition: transform 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+            width: 44px;
+            height: 44px;
+            border-radius: 0;
+            background: rgba(255, 87, 34, 0.08);
+            color: var(--agency-accent);
+            border: 1px solid rgba(255, 87, 34, 0.20);
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
         }
 
         .why-card:hover .why-icon {
-            transform: translateX(-50%) scale(1.1) rotate(8deg);
+            transform: scale(1.05);
         }
 
         .why-content h3 {
             font-family: 'Poppins', sans-serif;
-            font-size: 20px;
+            font-size: 18px;
             font-weight: 700;
             margin-bottom: 10px;
-            color: #1a0f30;
+            color: #ffffff;
         }
 
         .why-content p {
             font-family: 'Poppins', sans-serif;
-            color: rgba(26, 15, 48, 0.8);
+            color: var(--agency-text-muted);
             font-size: 13.5px;
-            line-height: 1.5;
-            font-weight: 500;
+            line-height: 1.6;
+            font-weight: 400;
+        }
+
+        @media (max-width: 991px) {
+            .why-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .why-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
         }
 
         /* ── Compact Steps Strip ───────────────────── */
