@@ -1674,9 +1674,9 @@
             position: relative;
         }
 
-        .why-text-item, .why-text-arrow {
+        .why-text-item > *, .why-text-arrow {
             opacity: 0;
-            transform: translateY(30px);
+            transform: translateY(20px);
             will-change: transform, opacity;
         }
 
@@ -3007,16 +3007,34 @@
                 }
             });
  
-            /* ── Why HackNest Vertical Stack Sequential Reveal ── */
-            const whyItems = gsap.utils.toArray(".why-text-item, .why-text-arrow");
-            whyItems.forEach((item) => {
-                gsap.to(item, {
+            /* ── Why HackNest Vertical Stack Staggered Reveal ── */
+            const whyTextItems = gsap.utils.toArray(".why-text-item");
+            whyTextItems.forEach((item) => {
+                const children = item.querySelectorAll("& > *");
+                gsap.to(children, {
                     opacity: 1,
                     y: 0,
-                    ease: "power2.out",
+                    duration: 0.8,
+                    stagger: 0.18,
+                    ease: "power3.out",
                     scrollTrigger: {
                         trigger: item,
-                        start: "top 82%",
+                        start: "top 80%",
+                        toggleActions: "play none none none"
+                    }
+                });
+            });
+ 
+            const whyArrows = gsap.utils.toArray(".why-text-arrow");
+            whyArrows.forEach((arrow) => {
+                gsap.to(arrow, {
+                    opacity: 1,
+                    y: 0,
+                    duration: 0.6,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: arrow,
+                        start: "top 80%",
                         toggleActions: "play none none none"
                     }
                 });
