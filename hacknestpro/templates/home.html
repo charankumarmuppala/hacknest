@@ -2421,14 +2421,19 @@
                 width: 100%;
                 text-align: center;
  
-        /* Ensure all sections and body use the exact same background as the hero section */
+        /* Ensure all sections let the parent site grid background (with grid lines and glows) show through */
         body,
-        .site-grid-bg,
+        .site-grid-bg {
+            background-color: var(--agency-bg) !important;
+        }
+
         .horizontal-scroll-section,
         .why-nest,
         .agency-footer,
-        .pin-wrap-sticky {
-            background-color: var(--agency-bg) !important;
+        .pin-wrap-sticky,
+        .hackathons {
+            background-color: transparent !important;
+            background: transparent !important;
         }
     </style>
 </head>
