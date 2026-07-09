@@ -604,68 +604,41 @@
             position: absolute;
             left: -30px;
             top: 50%;
-            width: 26px;
-            height: 26px;
-            background: #000000;
-            border: 3.5px solid #ffffff;
+            width: 32px;
+            height: 32px;
+            background: #111010;
+            border: 2px solid var(--agency-accent);
             border-radius: 50%;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Poppins', sans-serif;
+            font-family: var(--agency-font-mono);
             font-weight: 700;
-            font-size: 11px;
-            color: #ffffff;
+            font-size: 13px;
+            color: var(--agency-accent);
             z-index: 3;
             transform: translate(-50%, -50%);
-        }
-
-        /* Curved arrow icon */
-        .workflow-arrow-svg {
-            position: absolute;
-            left: -30px;
-            top: calc(50% + 11px);
-            width: 18px;
-            height: 18px;
-            transform: translateX(-50%);
-            stroke: #ffffff !important;
-            z-index: 3;
+            box-shadow: 0 0 10px rgba(255, 87, 34, 0.2);
         }
 
         .workflow-card {
             position: relative;
             width: 100%;
-            background: var(--bg);
-            border: 2px solid #ffffff;
-            border-radius: 8px 16px 8px 20px / 16px 8px 20px 8px;
-            padding: 10px 18px;
+            background: #111010;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 0;
+            padding: 20px 24px;
             display: flex;
             flex-direction: row;
             align-items: center;
             gap: 14px;
-            box-shadow: 0 4px 0 rgba(0, 0, 0, 0.3);
-            transition: box-shadow 0.2s ease, transform 0.2s ease;
+            transition: border-color 0.25s ease, transform 0.25s ease, box-shadow 0.25s ease;
         }
 
         .workflow-card:hover {
-            box-shadow: 0 6px 0 rgba(0, 0, 0, 0.4);
+            border-color: var(--agency-accent);
             transform: translateY(-2px);
-        }
-
-        /* Hand-drawn tape effect */
-        .workflow-card::after {
-            content: '';
-            position: absolute;
-            top: -6px;
-            right: 20px;
-            width: 38px;
-            height: 11px;
-            background: #8b8755;
-            opacity: 0.85;
-            transform: rotate(-2deg);
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-            border-left: 1px dashed rgba(255, 255, 255, 0.15);
-            border-right: 1px dashed rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 20px rgba(255, 87, 34, 0.12);
         }
 
         .workflow-card-icon {
@@ -2747,61 +2720,31 @@
                         <div class="workflow-line"></div>
                         <div class="workflow-line-progress"></div>
 
-                        <!-- Step 1 -->
-                        <div class="workflow-step reveal reveal-fade-up">
-                            <div class="step-number">1</div>
+                        <!-- Step 1: Discover -->
+                        <div class="workflow-step reveal-gsap-step">
+                            <div class="step-number">01</div>
                             <div class="workflow-card">
                                 <div class="workflow-card-icon">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <circle cx="11" cy="11" r="8"></circle>
                                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                                     </svg>
                                 </div>
                                 <div class="workflow-card-content">
                                     <h3>Discover</h3>
-                                    <p>Explore upcoming hackathons.</p>
+                                    <p>Find hackathons from different clubs and register easily—all in one place.</p>
                                 </div>
                             </div>
-                            <!-- Curved elbow arrow to the next step -->
-                            <svg class="workflow-arrow-svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M 6 0 L 6 12 A 6 6 0 0 0 12 18 L 24 18" />
-                                <polyline points="18 13 24 18 18 23" />
-                            </svg>
                         </div>
 
-                        <!-- Step 2 -->
-                        <div class="workflow-step reveal reveal-fade-up">
-                            <div class="step-number">2</div>
+                        <!-- Step 2: Collaborate -->
+                        <div class="workflow-step reveal-gsap-step">
+                            <div class="step-number">02</div>
                             <div class="workflow-card">
                                 <div class="workflow-card-icon">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M12 20h9" />
-                                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
-                                    </svg>
-                                </div>
-                                <div class="workflow-card-content">
-                                    <h3>📝 Register</h3>
-                                    <p>Sign up and secure your spot.</p>
-                                </div>
-                            </div>
-                            <!-- Curved elbow arrow to the next step -->
-                            <svg class="workflow-arrow-svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M 6 0 L 6 12 A 6 6 0 0 0 12 18 L 24 18" />
-                                <polyline points="18 13 24 18 18 23" />
-                            </svg>
-                        </div>
-
-                        <!-- Step 3 -->
-                        <div class="workflow-step reveal reveal-fade-up">
-                            <div class="step-number">3</div>
-                            <div class="workflow-card">
-                                <div class="workflow-card-icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
                                         <circle cx="9" cy="7" r="4" />
                                         <path d="M23 21v-2a4 4 0 0 0-3-3.87" />
@@ -2809,75 +2752,19 @@
                                     </svg>
                                 </div>
                                 <div class="workflow-card-content">
-                                    <h3>👥 Team Up</h3>
-                                    <p>Form teams or join other creators.</p>
+                                    <h3>Collaborate</h3>
+                                    <p>Create or join teams and work together on innovative projects.</p>
                                 </div>
                             </div>
-                            <!-- Curved elbow arrow to the next step -->
-                            <svg class="workflow-arrow-svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M 6 0 L 6 12 A 6 6 0 0 0 12 18 L 24 18" />
-                                <polyline points="18 13 24 18 18 23" />
-                            </svg>
                         </div>
 
-                        <!-- Step 4 -->
-                        <div class="workflow-step reveal reveal-fade-up">
-                            <div class="step-number">4</div>
+                        <!-- Step 3: Showcase -->
+                        <div class="workflow-step reveal-gsap-step">
+                            <div class="step-number">03</div>
                             <div class="workflow-card">
                                 <div class="workflow-card-icon">
                                     <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <rect x="2" y="3" width="20" height="14" rx="2" ry="2" />
-                                        <line x1="8" y1="21" x2="16" y2="21" />
-                                        <line x1="12" y1="17" x2="12" y2="21" />
-                                    </svg>
-                                </div>
-                                <div class="workflow-card-content">
-                                    <h3>💻 Build</h3>
-                                    <p>Code, design, and bring ideas to life.</p>
-                                </div>
-                            </div>
-                            <!-- Curved elbow arrow to the next step -->
-                            <svg class="workflow-arrow-svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M 6 0 L 6 12 A 6 6 0 0 0 12 18 L 24 18" />
-                                <polyline points="18 13 24 18 18 23" />
-                            </svg>
-                        </div>
-
-                        <!-- Step 5 -->
-                        <div class="workflow-step reveal reveal-fade-up">
-                            <div class="step-number">5</div>
-                            <div class="workflow-card">
-                                <div class="workflow-card-icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                        <path d="M20.39 18.39A5 5 0 0 0 18 9h-1.26A8 8 0 1 0 3 16.3" />
-                                        <polyline points="16 16 12 12 8 16" />
-                                        <line x1="12" y1="12" x2="12" y2="21" />
-                                    </svg>
-                                </div>
-                                <div class="workflow-card-content">
-                                    <h3>📤 Submit</h3>
-                                    <p>Ship your project before the deadline.</p>
-                                </div>
-                            </div>
-                            <!-- Curved elbow arrow to the next step -->
-                            <svg class="workflow-arrow-svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                stroke="#8b5cf6" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                                <path d="M 6 0 L 6 12 A 6 6 0 0 0 12 18 L 24 18" />
-                                <polyline points="18 13 24 18 18 23" />
-                            </svg>
-                        </div>
-
-                        <!-- Step 6 -->
-                        <div class="workflow-step reveal reveal-fade-up">
-                            <div class="step-number">6</div>
-                            <div class="workflow-card">
-                                <div class="workflow-card-icon">
-                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                        stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                                         <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6" />
                                         <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18" />
                                         <path d="M4 22h16" />
@@ -2886,8 +2773,8 @@
                                     </svg>
                                 </div>
                                 <div class="workflow-card-content">
-                                    <h3>🏆 Results & Certificates</h3>
-                                    <p>Win prizes and earn verified badges.</p>
+                                    <h3>Showcase</h3>
+                                    <p>Submit your project, receive feedback, view results, and download certificates.</p>
                                 </div>
                             </div>
                         </div>
@@ -3066,6 +2953,27 @@
                     end: "bottom 70%",
                     scrub: true
                 }
+            });
+
+            /* ── Workflow Steps Staggered Text Reveal Animation ── */
+            document.querySelectorAll(".reveal-gsap-step").forEach((step) => {
+                const number = step.querySelector(".step-number");
+                const card = step.querySelector(".workflow-card");
+                
+                gsap.set([number, card], { opacity: 0, y: 40 });
+                
+                gsap.to([number, card], {
+                    opacity: 1,
+                    y: 0,
+                    stagger: 0.15,
+                    duration: 0.8,
+                    ease: "power2.out",
+                    scrollTrigger: {
+                        trigger: step,
+                        start: "top 80%",
+                        toggleActions: "play none none none"
+                    }
+                });
             });
 
             // --- Scramble Text Hover Effect ---
