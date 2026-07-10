@@ -19,6 +19,10 @@
             --agency-text-primary: #ffffff;
             --agency-text-muted: #8c827d;
             --agency-border: rgba(255, 87, 34, 0.06);
+            --agency-badge-bg: #150f0c;
+            --agency-badge-border: #2c1e19;
+            --agency-font-display: 'Bebas Neue', sans-serif;
+            --agency-font-mono: 'Space Mono', 'Fira Code', monospace;
         }
 
         * {
@@ -92,7 +96,7 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 48px 80px;
+            padding: 48px 60px 48px 80px;
             background-color: var(--agency-bg);
             position: relative;
             z-index: 2;
@@ -104,6 +108,8 @@
             justify-content: flex-start;
             align-items: center;
             width: 100%;
+            max-width: 420px;
+            margin-left: auto;
             z-index: 10;
         }
 
@@ -129,7 +135,7 @@
         .login-content {
             max-width: 420px;
             width: 100%;
-            margin: auto 0;
+            margin: auto 0 auto auto;
             display: flex;
             flex-direction: column;
             gap: 24px;
@@ -315,6 +321,8 @@
             font-size: 14px;
             color: var(--agency-text-muted);
             width: 100%;
+            max-width: 420px;
+            margin-left: auto;
             z-index: 10;
         }
 
@@ -338,30 +346,179 @@
         .right-panel {
             width: 50%;
             height: 100%;
+            position: relative;
             display: flex;
-            align-items: center;
-            justify-content: center;
+            flex-direction: column;
+            justify-content: space-between;
             padding: 48px;
             background-color: #0c0806;
-            position: relative;
-            z-index: 2;
-            border-left: 1px solid var(--agency-border);
+            overflow: hidden;
         }
 
-        .right-image-container {
+        .right-panel-bg {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 520px;
+            height: 100%;
+            background-size: cover;
+            background-position: center;
+            z-index: 1;
+            transition: background-image 0.5s ease-in-out, opacity 0.3s ease;
+            /* Radial mask to blend/merge image borders into background */
+            mask-image: radial-gradient(circle, black 35%, transparent 75%);
+            -webkit-mask-image: radial-gradient(circle, black 35%, transparent 75%);
+        }
+
+        .right-panel-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(180deg, rgba(12, 8, 6, 0.2) 0%, rgba(12, 8, 6, 0.8) 100%);
+            z-index: 2;
+        }
+
+        .right-content-wrapper {
+            position: relative;
+            z-index: 3;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .right-header {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+            width: 100%;
+        }
+
+        .join-us-btn {
+            padding: 10px 22px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            background-color: transparent;
+            color: #ffffff;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
+            text-decoration: none;
+            transition: all 0.25s ease;
+        }
+
+        .join-us-btn:hover {
+            border-color: var(--agency-accent);
+            color: var(--agency-accent);
+            background-color: transparent;
+        }
+
+        /* Bottom Quote Area */
+        .quote-container {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .quote-icon {
+            font-size: 64px;
+            font-family: var(--agency-font-display);
+            line-height: 1;
+            color: var(--agency-accent);
+            opacity: 0.9;
+            height: 36px;
+            font-weight: 800;
+        }
+
+        .quote-text {
+            font-size: 32px;
+            font-weight: 600;
+            color: #ffffff;
+            line-height: 1.3;
+            max-width: 480px;
+            letter-spacing: -0.5px;
+            transition: opacity 0.3s ease, transform 0.3s ease;
+        }
+
+        /* Bottom Indicators & Navigation */
+        .carousel-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        .slide-indicator {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .slide-number-active {
+            font-size: 14px;
+            font-weight: 600;
+            color: #ffffff;
+        }
+
+        .indicator-track {
+            width: 80px;
+            height: 2px;
+            background-color: rgba(255, 255, 255, 0.25);
+            position: relative;
+            border-radius: 2px;
+        }
+
+        .indicator-fill {
+            position: absolute;
+            left: 0;
+            top: 0;
+            height: 100%;
+            width: 33.33%;
+            background-color: var(--agency-accent);
+            border-radius: 2px;
+            transition: width 0.3s ease;
+        }
+
+        .slide-number-total {
+            font-size: 14px;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.5);
+        }
+
+        .nav-circles {
+            display: flex;
+            gap: 12px;
+        }
+
+        .nav-arrow-circle {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            background-color: transparent;
+            color: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
+            cursor: pointer;
+            transition: all 0.2s ease;
         }
 
-        .right-illust {
-            width: 100%;
-            height: auto;
-            max-height: 80vh;
-            object-fit: contain;
-            filter: drop-shadow(0 15px 35px rgba(0, 0, 0, 0.5));
+        .nav-arrow-circle:hover {
+            border-color: var(--agency-accent);
+            color: var(--agency-accent);
+            background-color: rgba(255, 87, 34, 0.05);
+        }
+
+        .nav-arrow-circle svg {
+            width: 18px;
+            height: 18px;
+            stroke-width: 2px;
         }
 
         /* ── RESPONSIVE DESIGN ── */
@@ -383,7 +540,6 @@
         <div class="hero-grid-overlay">
             <div class="grid-line" style="left: 16.66%;"></div>
             <div class="grid-line" style="left: 33.33%;"></div>
-            <div class="grid-line" style="left: 50%;"></div>
             <div class="grid-line" style="left: 66.66%;"></div>
             <div class="grid-line" style="left: 83.33%;"></div>
         </div>
@@ -454,10 +610,46 @@
             </footer>
         </section>
 
-        <!-- Right Panel: Static 2D Hackathon Image -->
+        <!-- Right Panel: High-fidelity Cosmic Hackathon Branding -->
         <section class="right-panel">
-            <div class="right-image-container">
-                <img src="{% static 'images/hackathon_2d.png' %}" alt="Hackathon Illustration" class="right-illust">
+            <div class="right-panel-bg"></div>
+            <div class="right-panel-overlay"></div>
+            
+            <div class="right-content-wrapper">
+                <header class="right-header">
+                    <div class="right-nav-actions">
+                        <a href="{% url 'signup' %}" class="join-us-btn scramble-trigger"><span class="scramble-text">Sign Up</span></a>
+                    </div>
+                </header>
+
+                <div class="right-bottom-content" style="margin-top: auto; display: flex; flex-direction: column; gap: 20px; width: 100%;">
+                    <div class="quote-container" style="margin-bottom: 0;">
+                        <div class="quote-icon">“</div>
+                        <h2 class="quote-text">Build the future you want in a universe of innovation!</h2>
+                    </div>
+
+                    <footer class="carousel-bottom" style="margin-top: 0;">
+                        <div class="slide-indicator">
+                            <span class="slide-number-active">01</span>
+                            <div class="indicator-track">
+                                <div class="indicator-fill"></div>
+                            </div>
+                            <span class="slide-number-total">03</span>
+                        </div>
+                        <div class="nav-circles">
+                            <button class="nav-arrow-circle" aria-label="Previous Slide">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+                                    <path d="M15 19l-7-7 7-7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                                </svg>
+                            </button>
+                            <button class="nav-arrow-circle" aria-label="Next Slide">
+                                <svg fill="none" stroke="currentColor" viewBox="0 0 24 24" width="18" height="18">
+                                    <path d="M9 5l7 7-7 7" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"></path>
+                                </svg>
+                            </button>
+                        </div>
+                    </footer>
+                </div>
             </div>
         </section>
 
@@ -465,6 +657,85 @@
 
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            const slides = [
+                {
+                    image: "{% static 'images/hackathon_2d.png' %}",
+                    quote: "Build the future you want in a universe of innovation!",
+                    number: "01"
+                },
+                {
+                    image: "{% static 'images/hackathon_2d_team.png' %}",
+                    quote: "Great minds code alike—collaborate, build, and conquer together.",
+                    number: "02"
+                },
+                {
+                    image: "{% static 'images/hackathon_2d_ideas.png' %}",
+                    quote: "Transform bold ideas into working code in a single weekend.",
+                    number: "03"
+                }
+            ];
+
+            let currentSlide = 0;
+            const bgElement = document.querySelector(".right-panel-bg");
+            const quoteElement = document.querySelector(".quote-text");
+            const numberElement = document.querySelector(".slide-number-active");
+            const fillElement = document.querySelector(".indicator-fill");
+            const prevBtn = document.querySelector('button[aria-label="Previous Slide"]');
+            const nextBtn = document.querySelector('button[aria-label="Next Slide"]');
+
+            const totalElement = document.querySelector(".slide-number-total");
+            if (totalElement) {
+                totalElement.textContent = "0" + slides.length;
+            }
+
+            // Set initial background image
+            if (bgElement && slides[0]) {
+                bgElement.style.backgroundImage = `url('${slides[0].image}')`;
+            }
+
+            function updateSlide(index) {
+                currentSlide = index;
+                if (currentSlide < 0) currentSlide = slides.length - 1;
+                if (currentSlide >= slides.length) currentSlide = 0;
+
+                const slide = slides[currentSlide];
+
+                // Fade out/slide out effect
+                bgElement.style.opacity = 0.8;
+                quoteElement.style.opacity = 0;
+                quoteElement.style.transform = "translateY(10px)";
+
+                setTimeout(() => {
+                    bgElement.style.backgroundImage = `url('${slide.image}')`;
+                    quoteElement.textContent = slide.quote;
+                    numberElement.textContent = slide.number;
+                    
+                    const percentage = ((currentSlide + 1) / slides.length) * 100;
+                    fillElement.style.width = percentage + "%";
+
+                    bgElement.style.opacity = 1;
+                    quoteElement.style.opacity = 1;
+                    quoteElement.style.transform = "translateY(0)";
+                }, 200);
+            }
+
+            if (prevBtn && nextBtn) {
+                prevBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    updateSlide(currentSlide - 1);
+                });
+
+                nextBtn.addEventListener("click", (e) => {
+                    e.preventDefault();
+                    updateSlide(currentSlide + 1);
+                });
+            }
+
+            // Auto-advance slide every 6 seconds
+            setInterval(() => {
+                updateSlide(currentSlide + 1);
+            }, 6000);
+
             // --- Scramble Text Hover Effect ---
             const chars = "+-<>=-/@#$%&*!?";
 
