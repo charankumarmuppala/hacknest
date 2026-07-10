@@ -6,23 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sign Up | HackNest</title>
     
-    <!-- Google Fonts: Inter & Poppins -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #18181b;
-            --primary-hover: #09090b;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --border-color: #e5e7eb;
-            --bg-light: #f9fafb;
-            --font-inter: 'Inter', sans-serif;
-            --font-poppins: 'Poppins', sans-serif;
+            --agency-bg: #0c0806;
+            --agency-accent: #ff5722;
+            --agency-accent-hover: #e64a19;
+            --agency-text-primary: #ffffff;
+            --agency-text-muted: #8c827d;
+            --agency-border: rgba(255, 87, 34, 0.06);
+            --agency-badge-bg: #150f0c;
+            --agency-badge-border: #2c1e19;
+            --agency-font-display: 'Bebas Neue', sans-serif;
+            --agency-font-mono: 'Space Mono', 'Fira Code', monospace;
         }
 
         * {
@@ -33,16 +33,60 @@
 
         body, html {
             height: 100%;
-            font-family: var(--font-inter);
-            background-color: #ffffff;
-            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--agency-bg);
+            color: var(--agency-text-primary);
             overflow: hidden;
+        }
+
+        /* Custom Orange Cursor */
+        html,
+        body,
+        a,
+        button,
+        input,
+        select,
+        textarea,
+        [role="button"] {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20"><path fill="%23ff5722" stroke="%23ffffff" stroke-width="1.5" d="M2.5,2v13.5l3.8-3.8l2.6,5.1l2.4-1.2l-2.6-5.1h5.3z"/></svg>') 1 1, auto !important;
         }
 
         .main-container {
             display: flex;
             height: 100vh;
             width: 100vw;
+            position: relative;
+            background-color: var(--agency-bg);
+        }
+
+        /* Grid lines overlay */
+        .hero-grid-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-grid-overlay .grid-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--agency-border);
+        }
+
+        /* Background Glow */
+        .hero-glow-bg {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 87, 34, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
         }
 
         /* ── LEFT PANEL (Sign Up Form) ── */
@@ -52,99 +96,76 @@
             display: flex;
             flex-direction: column;
             justify-content: space-between;
-            padding: 48px 80px;
-            background-color: #ffffff;
+            padding: 48px 60px 48px 80px;
+            background-color: var(--agency-bg);
             position: relative;
+            z-index: 2;
             overflow-y: auto;
         }
 
         .left-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-start;
             align-items: center;
             width: 100%;
+            max-width: 420px;
+            margin-left: auto;
+            z-index: 10;
         }
 
         .brand-logo {
-            font-family: var(--font-poppins);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .brand-logo-text {
+            font-family: 'Poppins', sans-serif;
             font-size: 24px;
             font-weight: 800;
-            color: #000000;
+            color: #ffffff;
             letter-spacing: -0.5px;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
         }
 
-        .brand-logo::after {
-            content: '.';
-            color: var(--accent);
-        }
-
-        .brand-logo span {
-            background: linear-gradient(180deg, #38bdf8 30%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .lang-selector {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-main);
-            background: #ffffff;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-        }
-
-        .lang-selector:hover {
-            background-color: var(--bg-light);
-            border-color: #d1d5db;
-        }
-
-        .lang-selector svg {
-            width: 14px;
-            height: 14px;
-            color: var(--text-muted);
+        .brand-logo-text span {
+            color: var(--agency-accent);
         }
 
         .login-content {
             max-width: 420px;
             width: 100%;
-            margin: auto;
+            margin: auto 0 auto auto;
             display: flex;
             flex-direction: column;
             gap: 24px;
             padding: 20px 0;
+            z-index: 10;
         }
 
         .title-group {
             display: flex;
             flex-direction: column;
             gap: 8px;
+            text-align: left;
         }
 
         .login-title {
-            font-family: var(--font-poppins);
-            font-size: 40px;
+            font-family: 'Poppins', sans-serif;
+            font-size: 38px;
             font-weight: 700;
-            color: var(--text-main);
+            color: var(--agency-text-primary);
             letter-spacing: -1px;
             line-height: 1.1;
         }
 
         .login-subtitle {
             font-size: 15px;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             line-height: 1.5;
         }
 
+        /* Google Login Button */
         .google-btn {
             display: flex;
             align-items: center;
@@ -152,29 +173,34 @@
             gap: 12px;
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background-color: #ffffff;
-            color: var(--text-main);
-            font-size: 14px;
-            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            background-color: #150f0c;
+            color: var(--agency-text-primary);
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
         }
 
         .google-btn:hover {
-            background-color: var(--bg-light);
-            border-color: #d1d5db;
+            background-color: transparent;
+            border-color: var(--agency-accent);
+            color: var(--agency-accent);
             transform: translateY(-1px);
         }
 
+        /* Divider "or" */
         .or-divider {
             display: flex;
             align-items: center;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             font-size: 13px;
             font-weight: 400;
-            margin: 8px 0;
+            margin: 4px 0;
         }
 
         .or-divider::before,
@@ -182,7 +208,7 @@
             content: "";
             flex: 1;
             height: 1px;
-            background-color: #e5e7eb;
+            background-color: rgba(255, 87, 34, 0.12);
         }
 
         .or-divider::before {
@@ -193,6 +219,7 @@
             margin-left: 16px;
         }
 
+        /* Form Inputs */
         .form-group {
             display: flex;
             flex-direction: column;
@@ -207,29 +234,30 @@
         .floating-input {
             width: 100%;
             padding: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background-color: var(--bg-light);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            background-color: #150f0c;
             font-size: 14px;
             font-family: inherit;
-            color: var(--text-main);
+            color: var(--agency-text-primary);
             outline: none;
             transition: all 0.2s ease;
         }
 
         .floating-input:focus {
-            border-color: var(--text-main);
-            background-color: #ffffff;
-            box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.05);
+            border-color: var(--agency-accent);
+            background-color: #150f0c;
+            box-shadow: 0 0 12px rgba(255, 87, 34, 0.2);
         }
 
+        /* Float Label Effect */
         .floating-label {
             position: absolute;
             left: 16px;
             top: 50%;
             transform: translateY(-50%);
             font-size: 14px;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             pointer-events: none;
             transition: all 0.2s ease;
             background-color: transparent;
@@ -238,50 +266,65 @@
         .floating-input:focus ~ .floating-label,
         .floating-input:not(:placeholder-shown) ~ .floating-label {
             top: 0;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-main);
-            padding: 0 4px;
-            background-color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--agency-accent);
+            padding: 0 6px;
+            background-color: var(--agency-bg);
             transform: translateY(-50%) scale(0.9);
             left: 12px;
         }
 
+        /* Submit Button */
         .login-submit-btn {
             width: 100%;
             padding: 16px;
-            border: none;
-            border-radius: 30px;
-            background-color: var(--primary);
+            border: 1px solid var(--agency-accent);
+            border-radius: 6px;
+            background-color: var(--agency-accent);
             color: #ffffff;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
             margin-top: 8px;
         }
 
         .login-submit-btn:hover {
-            background-color: var(--primary-hover);
+            background-color: transparent;
+            color: var(--agency-accent);
             transform: translateY(-1px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 24px rgba(255, 87, 34, 0.2);
         }
 
+        /* Footer Links */
         .left-footer {
-            text-align: center;
+            text-align: left;
             font-size: 14px;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             width: 100%;
+            max-width: 420px;
+            margin-left: auto;
+            z-index: 10;
         }
 
         .left-footer a {
-            color: var(--accent);
+            color: var(--agency-accent);
             font-weight: 600;
             text-decoration: none;
+            transition: color 0.15s ease;
         }
 
         .left-footer a:hover {
+            color: var(--agency-accent-hover);
             text-decoration: underline;
+        }
+
+        .scramble-text {
+            white-space: nowrap;
         }
 
         /* ── RIGHT PANEL ── */
@@ -293,7 +336,7 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 48px;
-            background-color: #0b0a13;
+            background-color: #0c0806;
             overflow: hidden;
         }
 
@@ -303,11 +346,13 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('{% static "images/hackathon_cosmic.png" %}');
             background-size: cover;
             background-position: center;
             z-index: 1;
             transition: background-image 0.5s ease-in-out, opacity 0.3s ease;
+            /* Radial mask to blend/merge image borders into background */
+            mask-image: radial-gradient(circle, black 35%, transparent 75%);
+            -webkit-mask-image: radial-gradient(circle, black 35%, transparent 75%);
         }
 
         .right-panel-overlay {
@@ -316,7 +361,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, rgba(11, 10, 19, 0.2) 0%, rgba(11, 10, 19, 0.7) 100%);
+            background: linear-gradient(180deg, rgba(12, 8, 6, 0.2) 0%, rgba(12, 8, 6, 0.8) 100%);
             z-index: 2;
         }
 
@@ -331,56 +376,32 @@
 
         .right-header {
             display: flex;
-            justify-content: space-between;
+            justify-content: flex-end;
             align-items: center;
             width: 100%;
         }
 
-        .community-badge {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(12px);
-            padding: 8px 18px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
-            color: #ffffff;
-            font-size: 13.5px;
-            font-weight: 500;
-        }
-
-        .right-nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 24px;
-        }
-
-        .signup-link-white {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0.85;
-        }
-
         .join-us-btn {
             padding: 10px 22px;
-            border: 1.5px solid #ffffff;
-            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
             background-color: transparent;
             color: #ffffff;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 11px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
             text-decoration: none;
             transition: all 0.25s ease;
         }
 
         .join-us-btn:hover {
-            background-color: #ffffff;
-            color: #0b0a13;
+            border-color: var(--agency-accent);
+            color: var(--agency-accent);
+            background-color: transparent;
         }
 
+        /* Bottom Quote Area */
         .quote-container {
             display: flex;
             flex-direction: column;
@@ -390,9 +411,9 @@
 
         .quote-icon {
             font-size: 64px;
-            font-family: var(--font-poppins);
+            font-family: var(--agency-font-display);
             line-height: 1;
-            color: #ffffff;
+            color: var(--agency-accent);
             opacity: 0.9;
             height: 36px;
             font-weight: 800;
@@ -408,6 +429,7 @@
             transition: opacity 0.3s ease, transform 0.3s ease;
         }
 
+        /* Bottom Indicators & Navigation */
         .carousel-bottom {
             display: flex;
             justify-content: space-between;
@@ -441,9 +463,10 @@
             left: 0;
             top: 0;
             height: 100%;
-            width: 16.66%;
-            background-color: #ffffff;
+            width: 33.33%;
+            background-color: var(--agency-accent);
             border-radius: 2px;
+            transition: width 0.3s ease;
         }
 
         .slide-number-total {
@@ -461,7 +484,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             background-color: transparent;
             color: #ffffff;
             display: flex;
@@ -472,8 +495,9 @@
         }
 
         .nav-arrow-circle:hover {
-            border-color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--agency-accent);
+            color: var(--agency-accent);
+            background-color: rgba(255, 87, 34, 0.05);
         }
 
         .nav-arrow-circle svg {
@@ -482,10 +506,11 @@
             stroke-width: 2px;
         }
 
+        /* ── RESPONSIVE DESIGN ── */
         @media (max-width: 1024px) {
             .left-panel {
                 width: 100%;
-                padding: 40px;
+                padding: 48px 40px;
             }
             .right-panel {
                 display: none;
@@ -496,10 +521,28 @@
 <body>
     <div class="main-container">
         
+        <!-- Grid lines overlay -->
+        <div class="hero-grid-overlay">
+            <div class="grid-line" style="left: 16.66%;"></div>
+            <div class="grid-line" style="left: 33.33%;"></div>
+            <div class="grid-line" style="left: 66.66%;"></div>
+            <div class="grid-line" style="left: 83.33%;"></div>
+        </div>
+
+        <!-- Background Glow -->
+        <div class="hero-glow-bg"></div>
+        
         <!-- Left Panel: Signup Form -->
         <section class="left-panel">
             <header class="left-header">
-                <a href="/" class="brand-logo">Hack<span>Nest</span></a>
+                <a href="/" class="brand-logo">
+                    <!-- Elegant double geometric arrow logo -->
+                    <svg width="34" height="24" viewBox="0 0 34 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 2H14L10 12L14 22H4L0 12L4 2Z" fill="#ff5722" />
+                        <path d="M20 2H30L26 12L30 22H20L16 12L20 2Z" fill="#ff5722" />
+                    </svg>
+                    <span class="brand-logo-text">Hack<span>Nest</span></span>
+                </a>
             </header>
 
             <main class="login-content">
@@ -514,14 +557,15 @@
                 </div>
 
                 <!-- Google Signup Option -->
-                <button class="google-btn">
+                <button class="google-btn scramble-trigger">
+                    <!-- Google Logo SVG -->
                     <svg width="18" height="18" viewBox="0 0 24 24">
                         <path fill="#EA4335" d="M12.24 10.285V14.4h6.887c-.648 2.41-2.519 4.2-5.136 4.2A5.72 5.72 0 0 1 8.28 12.87a5.72 5.72 0 0 1 5.711-5.73 5.58 5.58 0 0 1 3.903 1.548l3.056-3.08A9.878 9.878 0 0 0 13.99 2.5a9.99 9.99 0 0 0-9.99 10 9.99 9.99 0 0 0 9.99 10c5.56 0 9.89-3.9 9.89-9.96 0-.585-.05-1.17-.15-1.74H12.24Z"/>
                         <path fill="#4285F4" d="M23.73 12.24c0-.585-.05-1.17-.15-1.74H12.24v4.115h6.887a5.9 5.9 0 0 1-2.56 3.87l3.02 2.34c1.76-1.63 2.78-4.02 2.78-6.96Z"/>
                         <path fill="#FBBC05" d="M6.35 14.77a5.95 5.95 0 0 1-.31-1.9c0-.66.11-1.29.31-1.9L3.33 8.62a9.92 9.92 0 0 0-.84 4.25c0 1.5.3 2.93.84 4.25l3.02-2.35Z"/>
                         <path fill="#34A853" d="M13.99 21.5c2.7 0 4.96-.9 6.62-2.43l-3.02-2.34c-.84.57-1.92.91-3.6.91-2.77 0-5.12-1.87-5.96-4.38l-3.02 2.35c1.67 3.3 5.09 5.89 8.98 5.89Z"/>
                     </svg>
-                    <span>Sign up with Google</span>
+                    <span class="scramble-text">Sign up with Google</span>
                 </button>
 
                 <div class="or-divider">or</div>
@@ -545,7 +589,7 @@
                         <label for="password" class="floating-label">Password</label>
                     </div>
 
-                    <button type="submit" class="login-submit-btn">Sign Up</button>
+                    <button type="submit" class="login-submit-btn scramble-trigger"><span class="scramble-text">Sign Up</span></button>
                 </form>
             </main>
 
@@ -561,15 +605,8 @@
             
             <div class="right-content-wrapper">
                 <header class="right-header">
-                    <div class="community-badge">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-                            <polyline points="4 17 10 11 4 5"></polyline>
-                            <line x1="12" y1="19" x2="20" y2="19"></line>
-                        </svg>
-                        <span>Largest Hackathon Community</span>
-                    </div>
                     <div class="right-nav-actions">
-                        <a href="{% url 'login' %}" class="join-us-btn">Log In</a>
+                        <a href="{% url 'login' %}" class="join-us-btn scramble-trigger"><span class="scramble-text">Log In</span></a>
                     </div>
                 </header>
 
@@ -585,7 +622,7 @@
                             <div class="indicator-track">
                                 <div class="indicator-fill"></div>
                             </div>
-                            <span class="slide-number-total">06</span>
+                            <span class="slide-number-total">03</span>
                         </div>
                         <div class="nav-circles">
                             <button class="nav-arrow-circle" aria-label="Previous Slide">
@@ -610,18 +647,18 @@
         document.addEventListener("DOMContentLoaded", () => {
             const slides = [
                 {
-                    image: "{% static 'images/hackathon_cosmic.png' %}",
+                    image: "{% static 'images/hackathon_2d.png' %}",
                     quote: "Build the future you want in a universe of innovation!",
                     number: "01"
                 },
                 {
-                    image: "{% static 'images/hackathon_team_cosmic.png' %}",
-                    quote: "Collaborate and co-create in a galaxy of infinite possibilities!",
+                    image: "{% static 'images/hackathon_2d_team.png' %}",
+                    quote: "Great minds code alike—collaborate, build, and conquer together.",
                     number: "02"
                 },
                 {
-                    image: "{% static 'images/hackathon_ai_cosmic.png' %}",
-                    quote: "Innovate beyond limits and deploy your ideas to the stars!",
+                    image: "{% static 'images/hackathon_2d_ideas.png' %}",
+                    quote: "Transform bold ideas into working code in a single weekend.",
                     number: "03"
                 }
             ];
@@ -639,6 +676,11 @@
                 totalElement.textContent = "0" + slides.length;
             }
 
+            // Set initial background image
+            if (bgElement && slides[0]) {
+                bgElement.style.backgroundImage = `url('${slides[0].image}')`;
+            }
+
             function updateSlide(index) {
                 currentSlide = index;
                 if (currentSlide < 0) currentSlide = slides.length - 1;
@@ -646,6 +688,7 @@
 
                 const slide = slides[currentSlide];
 
+                // Fade out/slide out effect
                 bgElement.style.opacity = 0.8;
                 quoteElement.style.opacity = 0;
                 quoteElement.style.transform = "translateY(10px)";
@@ -676,9 +719,66 @@
                 });
             }
 
+            // Auto-advance slide every 6 seconds
             setInterval(() => {
                 updateSlide(currentSlide + 1);
             }, 6000);
+
+            // --- Scramble Text Hover Effect ---
+            const chars = "+-<>=-/@#$%&*!?";
+
+            // Measure and lock sizes once fonts are ready
+            document.fonts.ready.then(() => {
+                document.querySelectorAll('.scramble-trigger').forEach(trigger => {
+                    const targetTextEl = trigger.classList.contains('scramble-text') ? trigger : trigger.querySelector('.scramble-text');
+                    if (!targetTextEl) return;
+
+                    targetTextEl.style.display = 'inline-block';
+                    const currentWidth = targetTextEl.getBoundingClientRect().width;
+                    targetTextEl.style.width = `${Math.ceil(currentWidth)}px`;
+                    targetTextEl.style.textAlign = 'center';
+                });
+            });
+
+            document.querySelectorAll('.scramble-trigger').forEach(trigger => {
+                let interval = null;
+                let isAnimating = false;
+                const targetTextEl = trigger.classList.contains('scramble-text') ? trigger : trigger.querySelector('.scramble-text');
+                if (!targetTextEl) return;
+
+                // Cache original text
+                const originalText = targetTextEl.innerText.trim();
+                targetTextEl.dataset.value = originalText;
+
+                trigger.addEventListener('mouseenter', () => {
+                    if (isAnimating) return;
+                    isAnimating = true;
+                    let iteration = 0;
+                    clearInterval(interval);
+
+                    interval = setInterval(() => {
+                        targetTextEl.innerText = originalText
+                            .split("")
+                            .map((letter, index) => {
+                                if (letter === " ") return " ";
+
+                                if (index < iteration) {
+                                    return originalText[index];
+                                }
+                                return chars[Math.floor(Math.random() * chars.length)];
+                            })
+                            .join("");
+
+                        if (iteration >= originalText.length) {
+                            clearInterval(interval);
+                            targetTextEl.innerText = originalText;
+                            isAnimating = false;
+                        }
+
+                        iteration += 0.6;
+                    }, 20);
+                });
+            });
         });
     </script>
 </body>
