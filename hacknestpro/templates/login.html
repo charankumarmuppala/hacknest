@@ -6,23 +6,23 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Log In | HackNest</title>
     
-    <!-- Google Fonts: Inter & Poppins -->
+    <!-- Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Mono:wght@400;700&family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     
     <style>
         :root {
-            --primary: #18181b;
-            --primary-hover: #09090b;
-            --accent: #2563eb;
-            --accent-hover: #1d4ed8;
-            --text-main: #111827;
-            --text-muted: #6b7280;
-            --border-color: #e5e7eb;
-            --bg-light: #f9fafb;
-            --font-inter: 'Inter', sans-serif;
-            --font-poppins: 'Poppins', sans-serif;
+            --agency-bg: #0c0806;
+            --agency-accent: #ff5722;
+            --agency-accent-hover: #e64a19;
+            --agency-text-primary: #ffffff;
+            --agency-text-muted: #8c827d;
+            --agency-border: rgba(255, 87, 34, 0.06);
+            --agency-badge-bg: #150f0c;
+            --agency-badge-border: #2c1e19;
+            --agency-font-display: 'Bebas Neue', sans-serif;
+            --agency-font-mono: 'Space Mono', 'Fira Code', monospace;
         }
 
         * {
@@ -33,16 +33,59 @@
 
         body, html {
             height: 100%;
-            font-family: var(--font-inter);
-            background-color: #ffffff;
-            color: var(--text-main);
+            font-family: 'Poppins', sans-serif;
+            background-color: var(--agency-bg);
+            color: var(--agency-text-primary);
             overflow: hidden;
+        }
+
+        /* Custom Orange Cursor */
+        html,
+        body,
+        a,
+        button,
+        input,
+        select,
+        textarea,
+        [role="button"] {
+            cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 20 20"><path fill="%23ff5722" stroke="%23ffffff" stroke-width="1.5" d="M2.5,2v13.5l3.8-3.8l2.6,5.1l2.4-1.2l-2.6-5.1h5.3z"/></svg>') 1 1, auto !important;
         }
 
         .main-container {
             display: flex;
             height: 100vh;
             width: 100vw;
+            position: relative;
+        }
+
+        /* Grid lines overlay */
+        .hero-grid-overlay {
+            position: absolute;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .hero-grid-overlay .grid-line {
+            position: absolute;
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: var(--agency-border);
+        }
+
+        /* Background Glow */
+        .hero-glow-bg {
+            position: absolute;
+            top: 45%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 600px;
+            height: 600px;
+            background: radial-gradient(circle, rgba(255, 87, 34, 0.08) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+            filter: blur(50px);
         }
 
         /* ── LEFT PANEL (Login Form) ── */
@@ -53,8 +96,9 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 48px 80px;
-            background-color: #ffffff;
+            background-color: var(--agency-bg);
             position: relative;
+            z-index: 2;
             overflow-y: auto;
         }
 
@@ -63,57 +107,26 @@
             justify-content: space-between;
             align-items: center;
             width: 100%;
+            z-index: 10;
         }
 
         .brand-logo {
-            font-family: var(--font-poppins);
-            font-size: 24px;
-            font-weight: 800;
-            color: #000000;
-            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
             text-decoration: none;
-            display: flex;
-            align-items: center;
         }
 
-        .brand-logo::after {
-            content: '.';
-            color: var(--accent);
+        .brand-logo-text {
+            font-family: 'Poppins', sans-serif;
+            font-size: 22px;
+            font-weight: 800;
+            color: #ffffff;
+            letter-spacing: -0.5px;
         }
 
-        .brand-logo span {
-            background: linear-gradient(180deg, #38bdf8 30%, #0ea5e9 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        /* Language Dropdown Selector */
-        .lang-selector {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            padding: 8px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 30px;
-            font-size: 14px;
-            font-weight: 500;
-            color: var(--text-main);
-            background: #ffffff;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            user-select: none;
-        }
-
-        .lang-selector:hover {
-            background-color: var(--bg-light);
-            border-color: #d1d5db;
-        }
-
-        .lang-selector svg {
-            width: 14px;
-            height: 14px;
-            color: var(--text-muted);
-            transition: transform 0.2s ease;
+        .brand-logo-text span {
+            color: var(--agency-accent);
         }
 
         .login-content {
@@ -124,6 +137,7 @@
             flex-direction: column;
             gap: 24px;
             padding: 20px 0;
+            z-index: 10;
         }
 
         .title-group {
@@ -133,17 +147,17 @@
         }
 
         .login-title {
-            font-family: var(--font-poppins);
+            font-family: 'Poppins', sans-serif;
             font-size: 40px;
             font-weight: 700;
-            color: var(--text-main);
+            color: var(--agency-text-primary);
             letter-spacing: -1px;
             line-height: 1.1;
         }
 
         .login-subtitle {
             font-size: 15px;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             line-height: 1.5;
         }
 
@@ -155,19 +169,23 @@
             gap: 12px;
             width: 100%;
             padding: 14px 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background-color: #ffffff;
-            color: var(--text-main);
-            font-size: 14px;
-            font-weight: 500;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            background-color: #150f0c;
+            color: var(--agency-text-primary);
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
         }
 
         .google-btn:hover {
-            background-color: var(--bg-light);
-            border-color: #d1d5db;
+            background-color: transparent;
+            border-color: var(--agency-accent);
+            color: var(--agency-accent);
             transform: translateY(-1px);
         }
 
@@ -179,7 +197,7 @@
         .or-divider {
             display: flex;
             align-items: center;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             font-size: 13px;
             font-weight: 400;
             margin: 8px 0;
@@ -190,7 +208,7 @@
             content: "";
             flex: 1;
             height: 1px;
-            background-color: #e5e7eb;
+            background-color: rgba(255, 87, 34, 0.15);
         }
 
         .or-divider::before {
@@ -216,20 +234,20 @@
         .floating-input {
             width: 100%;
             padding: 16px;
-            border: 1px solid var(--border-color);
-            border-radius: 12px;
-            background-color: var(--bg-light);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            background-color: #150f0c;
             font-size: 14px;
             font-family: inherit;
-            color: var(--text-main);
+            color: var(--agency-text-primary);
             outline: none;
             transition: all 0.2s ease;
         }
 
         .floating-input:focus {
-            border-color: var(--text-main);
-            background-color: #ffffff;
-            box-shadow: 0 0 0 4px rgba(17, 24, 39, 0.05);
+            border-color: var(--agency-accent);
+            background-color: #150f0c;
+            box-shadow: 0 0 12px rgba(255, 87, 34, 0.2);
         }
 
         /* Float Label Effect */
@@ -239,7 +257,7 @@
             top: 50%;
             transform: translateY(-50%);
             font-size: 14px;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             pointer-events: none;
             transition: all 0.2s ease;
             background-color: transparent;
@@ -248,18 +266,18 @@
         .floating-input:focus ~ .floating-label,
         .floating-input:not(:placeholder-shown) ~ .floating-label {
             top: 0;
-            font-size: 12px;
-            font-weight: 500;
-            color: var(--text-main);
-            padding: 0 4px;
-            background-color: #ffffff;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--agency-accent);
+            padding: 0 6px;
+            background-color: var(--agency-bg);
             transform: translateY(-50%) scale(0.9);
             left: 12px;
         }
 
         .forgot-link {
             align-self: flex-end;
-            color: var(--accent);
+            color: var(--agency-accent);
             font-size: 13px;
             font-weight: 500;
             text-decoration: none;
@@ -268,7 +286,7 @@
         }
 
         .forgot-link:hover {
-            color: var(--accent-hover);
+            color: var(--agency-accent-hover);
             text-decoration: underline;
         }
 
@@ -276,21 +294,25 @@
         .login-submit-btn {
             width: 100%;
             padding: 16px;
-            border: none;
-            border-radius: 30px;
-            background-color: var(--primary);
+            border: 1px solid var(--agency-accent);
+            border-radius: 6px;
+            background-color: var(--agency-accent);
             color: #ffffff;
-            font-size: 15px;
-            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
             cursor: pointer;
-            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
             margin-top: 8px;
         }
 
         .login-submit-btn:hover {
-            background-color: var(--primary-hover);
+            background-color: transparent;
+            color: var(--agency-accent);
             transform: translateY(-1px);
-            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            box-shadow: 0 8px 24px rgba(255, 87, 34, 0.2);
         }
 
         .login-submit-btn:active {
@@ -301,19 +323,20 @@
         .left-footer {
             text-align: center;
             font-size: 14px;
-            color: var(--text-muted);
+            color: var(--agency-text-muted);
             width: 100%;
+            z-index: 10;
         }
 
         .left-footer a {
-            color: var(--accent);
+            color: var(--agency-accent);
             font-weight: 600;
             text-decoration: none;
             transition: color 0.15s ease;
         }
 
         .left-footer a:hover {
-            color: var(--accent-hover);
+            color: var(--agency-accent-hover);
             text-decoration: underline;
         }
 
@@ -326,7 +349,7 @@
             flex-direction: column;
             justify-content: space-between;
             padding: 48px;
-            background-color: #0b0a13;
+            background-color: #0c0806;
             overflow: hidden;
         }
 
@@ -337,7 +360,6 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-image: url('{% static "images/hackathon_cosmic.png" %}');
             background-size: cover;
             background-position: center;
             z-index: 1;
@@ -350,7 +372,7 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(180deg, rgba(11, 10, 19, 0.2) 0%, rgba(11, 10, 19, 0.7) 100%);
+            background: linear-gradient(180deg, rgba(12, 8, 6, 0.2) 0%, rgba(12, 8, 6, 0.8) 100%);
             z-index: 2;
         }
 
@@ -374,19 +396,19 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            background: rgba(255, 255, 255, 0.1);
+            background: var(--agency-badge-bg);
             backdrop-filter: blur(12px);
             -webkit-backdrop-filter: blur(12px);
             padding: 8px 18px;
-            border-radius: 30px;
-            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
+            border: 1px solid var(--agency-badge-border);
             color: #ffffff;
             font-size: 13.5px;
             font-weight: 500;
         }
 
         .community-badge svg {
-            color: #ffffff;
+            color: var(--agency-accent);
         }
 
         .right-nav-actions {
@@ -395,34 +417,24 @@
             gap: 24px;
         }
 
-        .signup-link-white {
-            color: #ffffff;
-            text-decoration: none;
-            font-size: 14px;
-            font-weight: 500;
-            opacity: 0.85;
-            transition: opacity 0.2s ease;
-        }
-
-        .signup-link-white:hover {
-            opacity: 1;
-        }
-
         .join-us-btn {
             padding: 10px 22px;
-            border: 1.5px solid #ffffff;
-            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            border-radius: 6px;
             background-color: transparent;
             color: #ffffff;
-            font-size: 14px;
-            font-weight: 600;
+            font-size: 12px;
+            letter-spacing: 1px;
+            text-transform: uppercase;
+            font-weight: 700;
             text-decoration: none;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+            transition: all 0.25s ease;
         }
 
         .join-us-btn:hover {
-            background-color: #ffffff;
-            color: #0b0a13;
+            border-color: var(--agency-accent);
+            color: var(--agency-accent);
+            background-color: transparent;
         }
 
         /* Bottom Quote Area */
@@ -435,9 +447,9 @@
 
         .quote-icon {
             font-size: 64px;
-            font-family: var(--font-poppins);
+            font-family: var(--agency-font-display);
             line-height: 1;
-            color: #ffffff;
+            color: var(--agency-accent);
             opacity: 0.9;
             height: 36px;
             font-weight: 800;
@@ -487,8 +499,8 @@
             left: 0;
             top: 0;
             height: 100%;
-            width: 16.66%; /* 1/6 representing 01/06 */
-            background-color: #ffffff;
+            width: 33.33%;
+            background-color: var(--agency-accent);
             border-radius: 2px;
             transition: width 0.3s ease;
         }
@@ -508,7 +520,7 @@
             width: 40px;
             height: 40px;
             border-radius: 50%;
-            border: 1.5px solid rgba(255, 255, 255, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.15);
             background-color: transparent;
             color: #ffffff;
             display: flex;
@@ -519,8 +531,9 @@
         }
 
         .nav-arrow-circle:hover {
-            border-color: #ffffff;
-            background-color: rgba(255, 255, 255, 0.1);
+            border-color: var(--agency-accent);
+            color: var(--agency-accent);
+            background-color: rgba(255, 87, 34, 0.05);
         }
 
         .nav-arrow-circle svg {
@@ -544,10 +557,29 @@
 <body>
     <div class="main-container">
         
+        <!-- Grid lines overlay -->
+        <div class="hero-grid-overlay">
+            <div class="grid-line" style="left: 16.66%;"></div>
+            <div class="grid-line" style="left: 33.33%;"></div>
+            <div class="grid-line" style="left: 50%;"></div>
+            <div class="grid-line" style="left: 66.66%;"></div>
+            <div class="grid-line" style="left: 83.33%;"></div>
+        </div>
+
+        <!-- Background Glow -->
+        <div class="hero-glow-bg"></div>
+        
         <!-- Left Panel: Login Form -->
         <section class="left-panel">
             <header class="left-header">
-                <a href="/" class="brand-logo">Hack<span>Nest</span></a>
+                <a href="/" class="brand-logo">
+                    <!-- Elegant double geometric arrow logo -->
+                    <svg width="34" height="24" viewBox="0 0 34 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M4 2H14L10 12L14 22H4L0 12L4 2Z" fill="#ff5722" />
+                        <path d="M20 2H30L26 12L30 22H20L16 12L20 2Z" fill="#ff5722" />
+                    </svg>
+                    <span class="brand-logo-text">Hack<span>Nest</span></span>
+                </a>
             </header>
 
             <main class="login-content">
@@ -632,7 +664,7 @@
                             <div class="indicator-track">
                                 <div class="indicator-fill"></div>
                             </div>
-                            <span class="slide-number-total">06</span>
+                            <span class="slide-number-total">03</span>
                         </div>
                         <div class="nav-circles">
                             <button class="nav-arrow-circle" aria-label="Previous Slide">
