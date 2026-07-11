@@ -2602,13 +2602,30 @@
                 <div class="agency-nav-right" style="position: relative; display: flex; align-items: center; gap: 12px;">
                     <!-- Inbox Icon & Dropdown -->
                     <div class="agency-nav-inbox" style="position: relative; margin-right: 8px;">
+                        <style>
+                            .notif-scroll-container::-webkit-scrollbar {
+                                width: 5px;
+                            }
+                            .notif-scroll-container::-webkit-scrollbar-track {
+                                background: rgba(255, 255, 255, 0.02);
+                                border-radius: 10px;
+                            }
+                            .notif-scroll-container::-webkit-scrollbar-thumb {
+                                background: rgba(255, 87, 34, 0.2);
+                                border-radius: 10px;
+                            }
+                            .notif-scroll-container::-webkit-scrollbar-thumb:hover {
+                                background: rgba(255, 87, 34, 0.4);
+                            }
+                        </style>
+
                         <button type="button" onclick="event.stopPropagation(); document.getElementById('inbox-dropdown').classList.toggle('active'); document.getElementById('profile-dropdown').classList.remove('active');" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; transition: all 0.25s ease; position: relative;" class="inbox-btn">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                                 <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
                             </svg>
                             {% if unread_count > 0 %}
-                                <span class="badge" style="position: absolute; top: -1px; right: -1px; background: var(--agency-accent); color: #ffffff; font-size: 9px; font-weight: 700; border-radius: 50%; min-width: 15px; height: 15px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #110c0a; font-family: var(--agency-font-mono);">
+                                <span class="inbox-unread-badge" style="position: absolute; top: -1px; right: -1px; background: var(--agency-accent); color: #ffffff; font-size: 9px; font-weight: 700; border-radius: 50%; width: 16px; height: 16px; min-width: 16px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #110c0a; font-family: var(--agency-font-mono); margin: 0; padding: 0; box-shadow: none; z-index: 5;">
                                     {{ unread_count }}
                                 </span>
                             {% endif %}
@@ -2629,7 +2646,7 @@
                                 {% endif %}
                             </div>
 
-                            <div style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding-right: 2px;">
+                            <div class="notif-scroll-container" style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding-right: 2px;">
                                 {% if notifications %}
                                     {% for notif in notifications %}
                                         <div style="background: {% if notif.is_read %}rgba(255,255,255,0.01){% else %}rgba(255, 87, 34, 0.02){% endif %}; border: 1px solid {% if notif.is_read %}rgba(255, 255, 255, 0.05){% else %}rgba(255, 87, 34, 0.15){% endif %}; border-radius: 12px; padding: 12px 14px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease;">
@@ -2641,14 +2658,16 @@
                                             </div>
 
                                             <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 12px;">
-                                                <p style="color: #ffffff; font-size: 13px; margin: 0; line-height: 1.4; flex-grow: 1;">{{ notif.message }}</p>
+                                                <p style="color: #ffffff; font-size: 13px; margin: 0; line-height: 1.4; flex-grow: 1; word-break: break-word;">{{ notif.message }}</p>
                                                 {% if not notif.is_read %}
-                                                    <form method="POST" style="margin: 0; flex-shrink: 0;">
+                                                    <form method="POST" style="margin: 0; flex-shrink: 0; display: flex; align-items: center;">
                                                         {% csrf_token %}
                                                         <input type="hidden" name="action" value="mark_read">
                                                         <input type="hidden" name="notification_id" value="{{ notif.id }}">
-                                                        <button type="submit" class="scramble-trigger" style="background: rgba(255, 87, 34, 0.1); border: 1px solid rgba(255, 87, 34, 0.3); color: var(--agency-accent); cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 3px 8px; border-radius: 6px; transition: all 0.2s;" title="Mark as Read">
-                                                            <span class="scramble-text">Read</span>
+                                                        <button type="submit" style="background: rgba(255, 87, 34, 0.1); border: 1px solid rgba(255, 87, 34, 0.25); color: var(--agency-accent); cursor: pointer; display: flex; align-items: center; justify-content: center; width: 24px; height: 24px; border-radius: 6px; transition: all 0.2s;" title="Mark as Read">
+                                                            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+                                                                <polyline points="20 6 9 17 4 12"></polyline>
+                                                            </svg>
                                                         </button>
                                                     </form>
                                                 {% endif %}
