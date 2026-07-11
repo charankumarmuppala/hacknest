@@ -2668,7 +2668,7 @@
                             }
                         </style>
 
-                        <button type="button" onclick="event.stopPropagation(); document.getElementById('inbox-dropdown').classList.toggle('active'); document.getElementById('profile-dropdown').classList.remove('active');" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; transition: all 0.25s ease; position: relative;" class="inbox-btn">
+                        <button type="button" onclick="event.stopPropagation(); document.getElementById('inbox-dropdown').classList.toggle('active'); document.getElementById('profile-dropdown').classList.remove('active'); document.getElementById('chat-dropdown').classList.remove('active');" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; transition: all 0.25s ease; position: relative;" class="inbox-btn">
                             <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
                                 <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
                                 <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
@@ -2755,7 +2755,7 @@
                         </div>
                     </div>
 
-                    <div class="agency-nav-profile" style="display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('profile-dropdown').classList.toggle('active'); document.getElementById('inbox-dropdown').classList.remove('active');">
+                    <div class="agency-nav-profile" style="display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('profile-dropdown').classList.toggle('active'); document.getElementById('inbox-dropdown').classList.remove('active'); document.getElementById('chat-dropdown').classList.remove('active');">
                         <div class="profile-avatar" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #ff5722, #e64a19); display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; color: #ffffff; font-size: 15px; border: 1.5px solid rgba(255, 255, 255, 0.25); box-shadow: 0 0 10px rgba(255, 87, 34, 0.4); text-transform: uppercase; overflow: hidden;">
                             {% if profile.profile_photo %}
                                 <img src="{{ profile.profile_photo.url }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
