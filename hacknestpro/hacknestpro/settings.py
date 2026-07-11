@@ -127,7 +127,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'leocharan1434@gmail.com'
-EMAIL_HOST_PASSWORD = ''
+EMAIL_HOST_PASSWORD = 'ktlo wqwv szou nocu'
 DEFAULT_FROM_EMAIL = 'leocharan1434@gmail.com'
 
 MEDIA_URL = '/media/'

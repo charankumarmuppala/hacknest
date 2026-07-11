@@ -2738,9 +2738,18 @@
                                         <li><span>✓</span> Virtual / Online</li>
                                         <li><span>✓</span> 150 Slots Available</li>
                                     </ul>
-                                    <button class="btn-agency-primary scramble-trigger"
-                                        style="width: 100%; margin-top: auto;"><span class="scramble-text">REGISTER
-                                            NOW</span></button>
+                                    {% if "AI Innovation Challenge" in registered_hackathons %}
+                                        <button class="btn-agency-primary scramble-trigger" disabled
+                                            style="width: 100%; margin-top: auto; border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.05); cursor: default;"><span class="scramble-text">REGISTERED ✓</span></button>
+                                    {% else %}
+                                        <form method="POST" style="width: 100%; margin-top: auto; display: flex;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="register_hackathon">
+                                            <input type="hidden" name="hackathon" value="AI Innovation Challenge">
+                                            <button type="submit" class="btn-agency-primary scramble-trigger"
+                                                style="width: 100%;"><span class="scramble-text">REGISTER NOW</span></button>
+                                        </form>
+                                    {% endif %}
                                 </div>
 
                                 <!-- Card 2: Code Sprint 3.0 -->
@@ -2759,9 +2768,18 @@
                                         <li><span>✓</span> 120 Slots Available</li>
                                         <li><span>✓</span> Mentorship sessions included</li>
                                     </ul>
-                                    <button class="btn-agency-primary scramble-trigger"
-                                        style="width: 100%; margin-top: auto;"><span class="scramble-text">REGISTER
-                                            NOW</span></button>
+                                    {% if "Code Sprint 3.0" in registered_hackathons %}
+                                        <button class="btn-agency-primary scramble-trigger" disabled
+                                            style="width: 100%; margin-top: auto; border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.05); cursor: default;"><span class="scramble-text">REGISTERED ✓</span></button>
+                                    {% else %}
+                                        <form method="POST" style="width: 100%; margin-top: auto; display: flex;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="register_hackathon">
+                                            <input type="hidden" name="hackathon" value="Code Sprint 3.0">
+                                            <button type="submit" class="btn-agency-primary scramble-trigger"
+                                                style="width: 100%;"><span class="scramble-text">REGISTER NOW</span></button>
+                                        </form>
+                                    {% endif %}
                                 </div>
 
                                 <!-- Card 3: BlockHack Summit -->
@@ -2780,9 +2798,18 @@
                                         <li><span>✓</span> Main Seminar Hall</li>
                                         <li><span>✓</span> Priority & ongoing support</li>
                                     </ul>
-                                    <button class="btn-agency-primary scramble-trigger"
-                                        style="width: 100%; margin-top: auto;"><span class="scramble-text">REGISTER
-                                            NOW</span></button>
+                                    {% if "BlockHack Summit" in registered_hackathons %}
+                                        <button class="btn-agency-primary scramble-trigger" disabled
+                                            style="width: 100%; margin-top: auto; border-color: #10b981; color: #10b981; background: rgba(16, 185, 129, 0.05); cursor: default;"><span class="scramble-text">REGISTERED ✓</span></button>
+                                    {% else %}
+                                        <form method="POST" style="width: 100%; margin-top: auto; display: flex;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="register_hackathon">
+                                            <input type="hidden" name="hackathon" value="BlockHack Summit">
+                                            <button type="submit" class="btn-agency-primary scramble-trigger"
+                                                style="width: 100%;"><span class="scramble-text">REGISTER NOW</span></button>
+                                        </form>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>

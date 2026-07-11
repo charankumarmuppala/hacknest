@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
-from accounts.models import UserProfile, Team
+from accounts.models import UserProfile, Team, HackathonRegistration
 from django.db.models import Q
 
 def login_view(request):
@@ -105,6 +105,7 @@ def orilogin_view(request):
 def studenthome_view(request):
     profile = None
     teams = []
+    registered_hackathons = []
     error = None
     success = None
 
@@ -115,11 +116,28 @@ def studenthome_view(request):
         # Handle POST requests
         if request.method == 'POST':
             action = request.POST.get('action')
-            if action == 'create_team':
+            
+            if action == 'register_hackathon':
+                hackathon = request.POST.get('hackathon', '').strip()
+                if not hackathon:
+                    error = "Hackathon name is required."
+                else:
+                    reg, created_reg = HackathonRegistration.objects.get_or_create(
+                        user=request.user,
+                        hackathon=hackathon
+                    )
+                    if created_reg:
+                        success = f"Successfully registered for '{hackathon}'!"
+                    else:
+                        error = f"You are already registered for '{hackathon}'."
+
+            elif action == 'create_team':
                 team_name = request.POST.get('team_name', '').strip()
                 hackathon = request.POST.get('hackathon', '').strip()
                 if not team_name or not hackathon:
                     error = "Team name and Hackathon selection are required."
+                elif not HackathonRegistration.objects.filter(user=request.user, hackathon=hackathon).exists():
+                    error = f"You must register for the '{hackathon}' hackathon first before creating a team."
                 elif Team.objects.filter(name=team_name).exists():
                     error = f"Team name '{team_name}' is already taken."
                 else:
@@ -138,7 +156,9 @@ def studenthome_view(request):
                 else:
                     try:
                         team = Team.objects.get(code=team_code)
-                        if request.user in team.members.all():
+                        if not HackathonRegistration.objects.filter(user=request.user, hackathon=team.hackathon).exists():
+                            error = f"You must register for the '{team.hackathon}' hackathon first before joining this team."
+                        elif request.user in team.members.all():
                             error = "You are already a member of this team."
                         elif team.members.count() >= 4:
                             error = "This team is already full (maximum 4 members)."
@@ -163,8 +183,9 @@ def studenthome_view(request):
                 except Team.DoesNotExist:
                     error = "Team not found."
         
-        # Fetch current user's teams
+        # Fetch current user's teams and registered hackathons
         teams = request.user.joined_teams.all()
+        registered_hackathons = list(request.user.registrations.values_list('hackathon', flat=True))
     else:
         student_id = "HN-2026-9999"
         
@@ -172,6 +193,7 @@ def studenthome_view(request):
         'student_id': student_id,
         'profile': profile,
         'teams': teams,
+        'registered_hackathons': registered_hackathons,
         'error': error,
         'success': success
     })

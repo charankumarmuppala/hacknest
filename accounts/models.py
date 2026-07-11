@@ -38,3 +38,15 @@ class Team(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class HackathonRegistration(models.Model):
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='registrations')
+    hackathon = models.CharField(max_length=150)
+    registered_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ('user', 'hackathon')
+
+    def __str__(self):
+        return f"{self.user.username} registered for {self.hackathon}"
