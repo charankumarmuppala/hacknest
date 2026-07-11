@@ -4,8 +4,9 @@ from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
-from accounts.models import UserProfile, Team, HackathonRegistration, Notification
+from accounts.models import UserProfile, Team, HackathonRegistration, Notification, TeamChatMessage
 from django.db.models import Q
+from django.http import JsonResponse
 
 def login_view(request):
     if request.method == 'POST':
@@ -415,6 +416,69 @@ def profile_view(request):
         'success': success_msg,
         'error': error_msg
     })
+
+
+def get_chat_messages(request, team_id):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+    
+    try:
+        team = Team.objects.get(id=team_id)
+    except Team.DoesNotExist:
+        return JsonResponse({'error': 'Team not found'}, status=404)
+        
+    if request.user not in team.members.all() and team.creator != request.user:
+        return JsonResponse({'error': 'Forbidden'}, status=403)
+        
+    messages = team.messages.all().order_by('created_at')
+    data = []
+    for msg in messages:
+        sender_name = msg.sender.first_name or msg.sender.username
+        data.append({
+            'id': msg.id,
+            'sender': sender_name,
+            'is_self': msg.sender == request.user,
+            'message': msg.message,
+            'created_at': msg.created_at.strftime('%H:%M'),
+        })
+    return JsonResponse({'messages': data})
+
+
+def send_chat_message(request):
+    if not request.user.is_authenticated:
+        return JsonResponse({'error': 'Unauthorized'}, status=401)
+        
+    if request.method == 'POST':
+        team_id = request.POST.get('team_id')
+        message_text = request.POST.get('message', '').strip()
+        
+        if not message_text or not team_id:
+            return JsonResponse({'error': 'Missing parameters'}, status=400)
+            
+        try:
+            team = Team.objects.get(id=team_id)
+        except Team.DoesNotExist:
+            return JsonResponse({'error': 'Team not found'}, status=404)
+            
+        if request.user not in team.members.all() and team.creator != request.user:
+            return JsonResponse({'error': 'Forbidden'}, status=403)
+            
+        msg = TeamChatMessage.objects.create(
+            team=team,
+            sender=request.user,
+            message=message_text
+        )
+        return JsonResponse({
+            'success': True,
+            'message': {
+                'id': msg.id,
+                'sender': msg.sender.first_name or msg.sender.username,
+                'is_self': True,
+                'message': msg.message,
+                'created_at': msg.created_at.strftime('%H:%M')
+            }
+        })
+    return JsonResponse({'error': 'Invalid request method'}, status=405)
 
 
 def admin_view(request):

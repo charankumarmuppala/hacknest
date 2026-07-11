@@ -2600,6 +2600,55 @@
 
                 <!-- Action Buttons (Login & Signup) -->
                 <div class="agency-nav-right" style="position: relative; display: flex; align-items: center; gap: 12px;">
+                    <!-- Chat Icon & Dropdown -->
+                    <div class="agency-nav-chat" style="position: relative; margin-right: 8px;">
+                        <style>
+                            .chat-team-item:hover {
+                                background: rgba(255, 87, 34, 0.06) !important;
+                                border-color: rgba(255, 87, 34, 0.3) !important;
+                            }
+                            .chat-btn:hover {
+                                background: rgba(255, 87, 34, 0.12) !important;
+                                border-color: rgba(255, 87, 34, 0.4) !important;
+                                color: var(--agency-accent) !important;
+                                box-shadow: 0 0 12px rgba(255, 87, 34, 0.2);
+                            }
+                        </style>
+
+                        <button type="button" onclick="event.stopPropagation(); document.getElementById('chat-dropdown').classList.toggle('active'); document.getElementById('inbox-dropdown').classList.remove('active'); document.getElementById('profile-dropdown').classList.remove('active');" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.08); color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 38px; height: 38px; border-radius: 50%; transition: all 0.25s ease; position: relative;" class="chat-btn">
+                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                            </svg>
+                        </button>
+
+                        <!-- Chat Dropdown Card -->
+                        <div id="chat-dropdown" class="profile-dropdown-card" style="right: 0; width: 320px; max-width: calc(100vw - 32px); padding: 18px; top: calc(100% + 12px); background: #0c0806; border: 1px solid var(--agency-border); box-shadow: 0 10px 40px rgba(0,0,0,0.6);">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--agency-border); padding-bottom: 10px;">
+                                <h4 style="font-size: 14px; font-weight: 700; color: #ffffff; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Team Chats</h4>
+                            </div>
+
+                            <div class="notif-scroll-container" style="display: flex; flex-direction: column; gap: 8px; max-height: 250px; overflow-y: auto; padding-right: 2px;">
+                                {% if teams %}
+                                    {% for team in teams %}
+                                        <div onclick="openTeamChat({{ team.id }}, '{{ team.name|escapejs }}')" style="background: rgba(255, 255, 255, 0.02); border: 1px solid rgba(255, 255, 255, 0.05); border-radius: 10px; padding: 12px 14px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; transition: all 0.2s ease;" class="chat-team-item">
+                                            <div style="display: flex; flex-direction: column; gap: 2px;">
+                                                <span style="font-weight: 600; font-size: 13px; color: #ffffff;">{{ team.name }}</span>
+                                                <span style="font-size: 10px; color: var(--agency-text-muted);">{{ team.hackathon }}</span>
+                                            </div>
+                                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--agency-accent)" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                                <polyline points="9 18 15 12 9 6"></polyline>
+                                            </svg>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div style="text-align: center; padding: 20px 0; color: var(--agency-text-muted); font-size: 13px;">
+                                        Join or create a team to start chatting.
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
                     <!-- Inbox Icon & Dropdown -->
                     <div class="agency-nav-inbox" style="position: relative; margin-right: 8px;">
                         <style>
@@ -3388,12 +3437,17 @@
                 const profileDropdown = document.getElementById("profile-dropdown");
                 const inboxContainer = document.querySelector(".agency-nav-inbox");
                 const inboxDropdown = document.getElementById("inbox-dropdown");
+                const chatContainer = document.querySelector(".agency-nav-chat");
+                const chatDropdown = document.getElementById("chat-dropdown");
                 
                 if (profileContainer && profileDropdown && !profileContainer.contains(e.target)) {
                     profileDropdown.classList.remove("active");
                 }
                 if (inboxContainer && inboxDropdown && !inboxContainer.contains(e.target)) {
                     inboxDropdown.classList.remove("active");
+                }
+                if (chatContainer && chatDropdown && !chatContainer.contains(e.target)) {
+                    chatDropdown.classList.remove("active");
                 }
             });
 
@@ -3414,7 +3468,159 @@
             });
         }
 
+        // Chat Script Logic
+        let chatPollInterval = null;
+        let currentChatTeamId = null;
+
+        function openTeamChat(teamId, teamName) {
+            currentChatTeamId = teamId;
+            document.getElementById('chat-team-id-input').value = teamId;
+            document.getElementById('chat-header-team-name').innerText = teamName;
+            document.getElementById('chat-dropdown').classList.remove('active');
+            
+            // Show widget
+            const widget = document.getElementById('floating-chat-widget');
+            widget.style.display = 'flex';
+            
+            // Initial fetch
+            fetchChatMessages(teamId);
+            
+            // Start Polling every 2 seconds
+            if (chatPollInterval) clearInterval(chatPollInterval);
+            chatPollInterval = setInterval(() => {
+                fetchChatMessages(teamId);
+            }, 2000);
+        }
+
+        function closeTeamChat() {
+            currentChatTeamId = null;
+            document.getElementById('floating-chat-widget').style.display = 'none';
+            if (chatPollInterval) {
+                clearInterval(chatPollInterval);
+                chatPollInterval = null;
+            }
+        }
+
+        function fetchChatMessages(teamId) {
+            fetch(`/studenthome/chat/messages/${teamId}/`)
+                .then(res => res.json())
+                .then(data => {
+                    if (data.error) return;
+                    const container = document.getElementById('chat-messages-container');
+                    const shouldScroll = container.scrollHeight - container.clientHeight <= container.scrollTop + 50;
+                    
+                    // Build messages HTML
+                    let html = '';
+                    data.messages.forEach(msg => {
+                        if (msg.is_self) {
+                            html += `
+                                <div style="align-self: flex-end; max-width: 80%; display: flex; flex-direction: column; align-items: flex-end;">
+                                    <div style="background: rgba(255, 87, 34, 0.15); border: 1px solid rgba(255, 87, 34, 0.3); border-radius: 12px 12px 2px 12px; padding: 8px 12px; color: #ffffff; font-size: 13px; line-height: 1.4; word-break: break-word;">
+                                        ${escapeHTML(msg.message)}
+                                    </div>
+                                    <span style="font-size: 8px; color: var(--agency-text-muted); margin-top: 3px;">${msg.created_at}</span>
+                                </div>
+                            `;
+                        } else {
+                            html += `
+                                <div style="align-self: flex-start; max-width: 80%; display: flex; flex-direction: column; align-items: flex-start;">
+                                    <span style="font-size: 9px; font-weight: 700; color: var(--agency-accent); margin-bottom: 2px; text-transform: uppercase; letter-spacing: 0.5px;">${escapeHTML(msg.sender)}</span>
+                                    <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 12px 12px 12px 2px; padding: 8px 12px; color: #ffffff; font-size: 13px; line-height: 1.4; word-break: break-word;">
+                                        ${escapeHTML(msg.message)}
+                                    </div>
+                                    <span style="font-size: 8px; color: var(--agency-text-muted); margin-top: 3px;">${msg.created_at}</span>
+                                </div>
+                            `;
+                        }
+                    });
+                    
+                    container.innerHTML = html || '<div style="text-align: center; color: var(--agency-text-muted); font-size: 12px; margin-top: 100px;">No messages yet. Say hi to your team!</div>';
+                    
+                    if (shouldScroll) {
+                        container.scrollTop = container.scrollHeight;
+                    }
+                });
+        }
+
+        function submitChatMessage(e) {
+            e.preventDefault();
+            const teamId = document.getElementById('chat-team-id-input').value;
+            const inputEl = document.getElementById('chat-message-text-input');
+            const message = inputEl.value.trim();
+            if (!message) return;
+            
+            // Clear input instantly for UI responsiveness
+            inputEl.value = '';
+            
+            const formData = new FormData();
+            formData.append('team_id', teamId);
+            formData.append('message', message);
+            
+            // Get CSRF Token
+            const csrfToken = document.querySelector('[name=csrfmiddlewaretoken]').value;
+            
+            fetch('/studenthome/chat/send/', {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': csrfToken
+                },
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    fetchChatMessages(teamId);
+                }
+            });
+        }
+
+        function escapeHTML(str) {
+            return str.replace(/[&<>'"]/g, 
+                tag => ({
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    "'": '&#39;',
+                    '"': '&quot;'
+                }[tag] || tag)
+            );
+        }
+
     </script>
+
+    <!-- Floating Chat Widget Markup -->
+    <div id="floating-chat-widget" style="position: fixed; bottom: 20px; right: 20px; width: 340px; height: 420px; background: #0c0806; border: 1px solid var(--agency-border); border-radius: 16px; box-shadow: 0 10px 40px rgba(0,0,0,0.8); z-index: 1000; display: none; flex-direction: column; overflow: hidden; font-family: 'Poppins', sans-serif;">
+        <!-- Chat Header -->
+        <div style="background: rgba(255, 87, 34, 0.05); border-bottom: 1px solid var(--agency-border); padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;">
+            <div style="display: flex; flex-direction: column;">
+                <span id="chat-header-team-name" style="font-weight: 700; font-size: 14px; color: #ffffff; text-transform: uppercase; letter-spacing: 0.5px;">Team Chat</span>
+                <span style="font-size: 9px; color: var(--agency-accent); font-family: var(--agency-font-mono);">ACTIVE SESSION</span>
+            </div>
+            <button type="button" onclick="closeTeamChat()" style="background: none; border: none; color: var(--agency-text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 4px; transition: color 0.2s;" onmouseover="this.style.color='#ffffff'" onmouseout="this.style.color='var(--agency-text-muted)'">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="18" y1="6" x2="6" y2="18"></line>
+                    <line x1="6" y1="6" x2="18" y2="18"></line>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Chat Messages Container -->
+        <div id="chat-messages-container" class="notif-scroll-container" style="flex-grow: 1; overflow-y: auto; padding: 16px; display: flex; flex-direction: column; gap: 12px;">
+            <!-- Dynamic chat messages go here -->
+        </div>
+
+        <!-- Chat Input Form -->
+        <form id="chat-message-form" onsubmit="submitChatMessage(event)" style="border-top: 1px solid var(--agency-border); padding: 12px; display: flex; gap: 8px; background: rgba(0,0,0,0.2);">
+            <input type="hidden" id="chat-team-id-input">
+            <input type="text" id="chat-message-text-input" placeholder="Type a message..." autocomplete="off" style="flex-grow: 1; background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: #ffffff; padding: 8px 12px; font-size: 13px; outline: none; transition: border-color 0.2s;" onfocus="this.style.borderColor='rgba(255, 87, 34, 0.4)'" onblur="this.style.borderColor='rgba(255,255,255,0.08)'">
+            <button type="submit" style="background: var(--agency-accent); border: none; color: #ffffff; padding: 8px 14px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 600; display: flex; align-items: center; justify-content: center;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                </svg>
+            </button>
+        </form>
+    </div>
 </body>
 
 </html>

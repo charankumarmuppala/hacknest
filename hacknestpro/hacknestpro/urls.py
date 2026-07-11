@@ -17,7 +17,7 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 from django.shortcuts import render
-from accounts.views import login_view, signup_view, orilogin_view, studenthome_view, otp_verify_view, profile_view, admin_view
+from accounts.views import login_view, signup_view, orilogin_view, studenthome_view, otp_verify_view, profile_view, admin_view, get_chat_messages, send_chat_message
 
 
 def home(request):
@@ -37,6 +37,8 @@ urlpatterns = [
     path('otp-verify/', otp_verify_view, name='otp_verify'),
     path('profile/', profile_view, name='profile'),
     path('admin-view/', admin_view, name='admin_view'),
+    path('studenthome/chat/send/', send_chat_message, name='send_chat_message'),
+    path('studenthome/chat/messages/<int:team_id>/', get_chat_messages, name='get_chat_messages'),
 ]
 
 if settings.DEBUG:
