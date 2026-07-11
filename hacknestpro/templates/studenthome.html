@@ -2791,6 +2791,159 @@
                     </div>
                 </section>
 
+                <!-- Team Corner Section -->
+                <section class="team-corner" id="teams" style="padding: 100px 0; border-top: 1px solid var(--agency-border); border-bottom: 1px solid var(--agency-border);">
+                    <div class="section-header reveal reveal-fade-up" style="margin-bottom: 60px; text-align: center;">
+                        <h2>TEAM<br><span>CORNER</span></h2>
+                        <p style="color: var(--agency-text-muted); font-size: 15px; max-width: 600px; margin: 15px auto 0 auto; line-height: 1.6;">
+                            Create your own crew or input an invitation code to join a team and build something incredible together.
+                        </p>
+                    </div>
+
+                    {% if error %}
+                    <div class="reveal reveal-fade-up" style="background: rgba(239, 68, 68, 0.1); border: 1px solid #ef4444; color: #ef4444; padding: 16px 24px; border-radius: 12px; font-size: 15px; max-width: 800px; margin: 0 auto 30px auto; text-align: center; font-family: 'Poppins', sans-serif;">
+                        <strong>Error:</strong> {{ error }}
+                    </div>
+                    {% endif %}
+
+                    {% if success %}
+                    <div class="reveal reveal-fade-up" style="background: rgba(16, 185, 129, 0.1); border: 1px solid #10b981; color: #10b981; padding: 16px 24px; border-radius: 12px; font-size: 15px; max-width: 800px; margin: 0 auto 30px auto; text-align: center; font-family: 'Poppins', sans-serif;">
+                        <strong>Success:</strong> {{ success }}
+                    </div>
+                    {% endif %}
+
+                    <div class="container reveal reveal-fade-up" style="max-width: 900px; margin: 0 auto;">
+                        {% if user.is_authenticated %}
+                            {% if teams %}
+                                <div style="display: flex; flex-direction: column; gap: 30px;">
+                                    {% for team in teams %}
+                                        <div class="team-card" style="background: #110c0a; border: 1px solid var(--agency-border); border-radius: 20px; padding: 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 20px; transition: all 0.3s ease;">
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 15px;">
+                                                <div>
+                                                    <span style="font-family: var(--agency-font-mono); font-size: 11px; text-transform: uppercase; color: var(--agency-accent); letter-spacing: 1px;">Joined Team</span>
+                                                    <h3 style="font-size: 28px; font-weight: 700; color: #ffffff; margin-top: 5px;">{{ team.name }}</h3>
+                                                    <p style="color: var(--agency-text-muted); font-size: 14px; margin-top: 2px;">Hackathon: <strong>{{ team.hackathon }}</strong></p>
+                                                </div>
+                                                <div style="display: flex; flex-direction: column; align-items: flex-end; gap: 6px;">
+                                                    <span style="font-size: 12px; color: var(--agency-text-muted);">Invite Code</span>
+                                                    <div style="display: flex; align-items: center; gap: 10px; background: #1a1310; border: 1px solid rgba(255, 87, 34, 0.2); padding: 8px 16px; border-radius: 8px;">
+                                                        <span id="code-{{ team.id }}" style="font-family: var(--agency-font-mono); font-size: 16px; font-weight: 700; color: #ffffff; letter-spacing: 1px;">{{ team.code }}</span>
+                                                        <button type="button" onclick="copyInviteCode('{{ team.code }}')" class="scramble-trigger" style="background: none; border: none; color: var(--agency-accent); cursor: pointer; display: flex; align-items: center; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.5px; padding: 0;" aria-label="Copy Code">
+                                                            <span class="scramble-text">Copy</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            </div>
+
+                                            <div style="height: 1px; background: var(--agency-border);"></div>
+
+                                            <div>
+                                                <h4 style="font-size: 14px; font-weight: 600; color: #ffffff; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 0.5px;">Members ({{ team.members.count }}/4)</h4>
+                                                <div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 15px;">
+                                                    {% for member in team.members.all %}
+                                                        <div style="display: flex; align-items: center; gap: 12px; background: #16100e; padding: 12px 16px; border-radius: 12px; border: 1px solid rgba(255, 87, 34, 0.04);">
+                                                            <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #ff5722, #e64a19); display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: #ffffff; text-transform: uppercase;">
+                                                                {% if member.profile.profile_photo %}
+                                                                    <img src="{{ member.profile.profile_photo.url }}" alt="" style="width: 100%; height: 100%; object-fit: cover; border-radius: 50%;">
+                                                                {% else %}
+                                                                    {{ member.email.0|default:member.username.0 }}
+                                                                {% endif %}
+                                                            </div>
+                                                            <div style="display: flex; flex-direction: column; overflow: hidden;">
+                                                                <span style="font-size: 14px; font-weight: 600; color: #ffffff; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;">
+                                                                    {% if member.first_name %}{{ member.first_name }} {{ member.last_name }}{% else %}{{ member.username }}{% endif %}
+                                                                </span>
+                                                                <span style="font-size: 11px; color: var(--agency-text-muted);">
+                                                                    {% if member == team.creator %}Creator{% else %}Member{% endif %}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    {% endfor %}
+                                                </div>
+                                            </div>
+
+                                            <div style="height: 1px; background: var(--agency-border); margin-top: 10px;"></div>
+
+                                            <div style="display: flex; justify-content: flex-end; margin-top: 5px;">
+                                                <form method="POST" onsubmit="return confirm('Are you sure you want to leave this team?');">
+                                                    {% csrf_token %}
+                                                    <input type="hidden" name="action" value="leave_team">
+                                                    <input type="hidden" name="team_id" value="{{ team.id }}">
+                                                    <button type="submit" class="btn-agency-secondary scramble-trigger" style="border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.05); padding: 10px 24px;">
+                                                        <span class="scramble-text">Leave Team</span>
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% else %}
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(350px, 1fr)); gap: 40px; align-items: start;">
+                                    <!-- Create Team Form Card -->
+                                    <div class="team-action-card" style="background: #110c0a; border: 1px solid var(--agency-border); border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 24px;">
+                                        <div style="display: flex; align-items: center; gap: 15px;">
+                                            <div style="background: rgba(255, 87, 34, 0.1); border: 1px solid rgba(255, 87, 34, 0.2); padding: 12px; border-radius: 12px; color: var(--agency-accent);">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                                            </div>
+                                            <div>
+                                                <h3 style="font-size: 22px; font-weight: 700; color: #ffffff;">Create a Team</h3>
+                                                <p style="color: var(--agency-text-muted); font-size: 13px; margin-top: 2px;">Start a new team and invite your friends.</p>
+                                            </div>
+                                        </div>
+                                        <form method="POST" style="display: flex; flex-direction: column; gap: 20px;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="create_team">
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <label for="team_name" style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--agency-text-muted); letter-spacing: 0.5px;">Team Name</label>
+                                                <input type="text" id="team_name" name="team_name" placeholder="Enter team name..." required style="background: #1a1310; border: 1px solid var(--agency-border); border-radius: 8px; padding: 14px; color: #ffffff; outline: none; font-size: 14px; font-family: inherit; transition: border-color 0.2s ease;">
+                                            </div>
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <label for="hackathon" style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--agency-text-muted); letter-spacing: 0.5px;">Select Hackathon</label>
+                                                <select id="hackathon" name="hackathon" required style="background: #1a1310; border: 1px solid var(--agency-border); border-radius: 8px; padding: 14px; color: #ffffff; outline: none; font-size: 14px; font-family: inherit; transition: border-color 0.2s ease;">
+                                                    <option value="" disabled selected>Select a hackathon...</option>
+                                                    <option value="AI Innovation Challenge">AI Innovation Challenge</option>
+                                                    <option value="Code Sprint 3.0">Code Sprint 3.0</option>
+                                                    <option value="BlockHack Summit">BlockHack Summit</option>
+                                                </select>
+                                            </div>
+                                            <button type="submit" class="btn-agency-primary scramble-trigger" style="width: 100%; margin-top: 10px; padding: 15px;"><span class="scramble-text">Create Team</span></button>
+                                        </form>
+                                    </div>
+
+                                    <!-- Join Team Form Card -->
+                                    <div class="team-action-card" style="background: #110c0a; border: 1px solid var(--agency-border); border-radius: 20px; padding: 40px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); display: flex; flex-direction: column; gap: 24px;">
+                                        <div style="display: flex; align-items: center; gap: 15px;">
+                                            <div style="background: rgba(255, 87, 34, 0.1); border: 1px solid rgba(255, 87, 34, 0.2); padding: 12px; border-radius: 12px; color: var(--agency-accent);">
+                                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>
+                                            </div>
+                                            <div>
+                                                <h3 style="font-size: 22px; font-weight: 700; color: #ffffff;">Join a Team</h3>
+                                                <p style="color: var(--agency-text-muted); font-size: 13px; margin-top: 2px;">Enter an invite code to join an existing crew.</p>
+                                            </div>
+                                        </div>
+                                        <form method="POST" style="display: flex; flex-direction: column; gap: 20px;">
+                                            {% csrf_token %}
+                                            <input type="hidden" name="action" value="join_team">
+                                            <div style="display: flex; flex-direction: column; gap: 8px;">
+                                                <label for="team_code" style="font-size: 12px; font-weight: 600; text-transform: uppercase; color: var(--agency-text-muted); letter-spacing: 0.5px;">Invite Code</label>
+                                                <input type="text" id="team_code" name="team_code" placeholder="e.g. A1B2C3" required style="background: #1a1310; border: 1px solid var(--agency-border); border-radius: 8px; padding: 14px; color: #ffffff; outline: none; font-size: 14px; font-family: inherit; transition: border-color 0.2s ease; text-transform: uppercase; font-family: var(--agency-font-mono); letter-spacing: 2px;">
+                                            </div>
+                                            <button type="submit" class="btn-agency-primary scramble-trigger" style="width: 100%; margin-top: 54px; padding: 15px;"><span class="scramble-text">Join Team</span></button>
+                                        </form>
+                                    </div>
+                                </div>
+                            {% endif %}
+                        {% else %}
+                            <div style="background: #110c0a; border: 1px solid var(--agency-border); border-radius: 20px; padding: 50px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5); position: relative; overflow: hidden; backdrop-filter: blur(5px);">
+                                <div style="font-size: 60px; margin-bottom: 20px; color: var(--agency-accent); opacity: 0.85;">🔒</div>
+                                <h3 style="font-size: 24px; font-weight: 700; color: #ffffff; margin-bottom: 10px;">Access Locked</h3>
+                                <p style="color: var(--agency-text-muted); font-size: 15px; max-width: 450px; margin: 0 auto 30px auto; line-height: 1.6;">You must be signed in to your student account to create or join teams.</p>
+                                <a href="{% url 'login' %}" class="btn-agency-primary scramble-trigger" style="display: inline-block; text-decoration: none;"><span class="scramble-text">Sign In Now</span></a>
+                            </div>
+                        {% endif %}
+                    </div>
+                </section>
+
 
 
 
@@ -3116,6 +3269,21 @@
             });
 
         });
+
+        // Copy Invite Code Helper function
+        function copyInviteCode(code) {
+            navigator.clipboard.writeText(code).then(() => {
+                const btn = event.currentTarget;
+                const txt = btn.querySelector('.scramble-text');
+                const orig = txt.innerText;
+                txt.innerText = 'Copied!';
+                setTimeout(() => {
+                    txt.innerText = orig;
+                }, 2000);
+            }).catch(err => {
+                console.error('Could not copy code:', err);
+            });
+        }
 
     </script>
 </body>

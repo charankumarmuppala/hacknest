@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
-from accounts.models import UserProfile
+from accounts.models import UserProfile, Team
 from django.db.models import Q
 
 def login_view(request):
@@ -104,12 +104,77 @@ def orilogin_view(request):
 
 def studenthome_view(request):
     profile = None
+    teams = []
+    error = None
+    success = None
+
     if request.user.is_authenticated:
         student_id = f"HN-2026-{1000 + request.user.pk}"
         profile, created = UserProfile.objects.get_or_create(user=request.user)
+        
+        # Handle POST requests
+        if request.method == 'POST':
+            action = request.POST.get('action')
+            if action == 'create_team':
+                team_name = request.POST.get('team_name', '').strip()
+                hackathon = request.POST.get('hackathon', '').strip()
+                if not team_name or not hackathon:
+                    error = "Team name and Hackathon selection are required."
+                elif Team.objects.filter(name=team_name).exists():
+                    error = f"Team name '{team_name}' is already taken."
+                else:
+                    team = Team.objects.create(
+                        name=team_name,
+                        hackathon=hackathon,
+                        creator=request.user
+                    )
+                    team.members.add(request.user)
+                    success = f"Team '{team_name}' created successfully! Share this code with members: {team.code}"
+            
+            elif action == 'join_team':
+                team_code = request.POST.get('team_code', '').strip().upper()
+                if not team_code:
+                    error = "Invite code is required."
+                else:
+                    try:
+                        team = Team.objects.get(code=team_code)
+                        if request.user in team.members.all():
+                            error = "You are already a member of this team."
+                        elif team.members.count() >= 4:
+                            error = "This team is already full (maximum 4 members)."
+                        else:
+                            team.members.add(request.user)
+                            success = f"Successfully joined team '{team.name}'!"
+                    except Team.DoesNotExist:
+                        error = "Invalid invite code. Please check and try again."
+            
+            elif action == 'leave_team':
+                team_id = request.POST.get('team_id')
+                try:
+                    team = Team.objects.get(id=team_id)
+                    if request.user in team.members.all():
+                        team.members.remove(request.user)
+                        # If no members are left, clean up the team
+                        if team.members.count() == 0:
+                            team.delete()
+                        success = "You have successfully left the team."
+                    else:
+                        error = "You are not a member of this team."
+                except Team.DoesNotExist:
+                    error = "Team not found."
+        
+        # Fetch current user's teams
+        teams = request.user.joined_teams.all()
     else:
         student_id = "HN-2026-9999"
-    return render(request, 'studenthome.html', {'student_id': student_id, 'profile': profile})
+        
+    return render(request, 'studenthome.html', {
+        'student_id': student_id,
+        'profile': profile,
+        'teams': teams,
+        'error': error,
+        'success': success
+    })
 
 def profile_view(request):
     if not request.user.is_authenticated:
