@@ -2600,7 +2600,94 @@
 
                 <!-- Action Buttons (Login & Signup) -->
                 <div class="agency-nav-right" style="position: relative; display: flex; align-items: center; gap: 12px;">
-                    <div class="agency-nav-profile" style="display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer;" onclick="document.getElementById('profile-dropdown').classList.toggle('active')">
+                    <!-- Inbox Icon & Dropdown -->
+                    <div class="agency-nav-inbox" style="position: relative; margin-right: 8px;">
+                        <button type="button" onclick="event.stopPropagation(); document.getElementById('inbox-dropdown').classList.toggle('active'); document.getElementById('profile-dropdown').classList.remove('active');" style="background: none; border: none; color: #ffffff; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 8px; border-radius: 50%; transition: background-color 0.2s;" class="inbox-btn">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            {% if unread_count > 0 %}
+                                <span class="badge" style="position: absolute; top: -2px; right: -2px; background: var(--agency-accent); color: #ffffff; font-size: 10px; font-weight: 700; border-radius: 50%; min-width: 16px; height: 16px; display: flex; align-items: center; justify-content: center; border: 1.5px solid #110c0a; font-family: var(--agency-font-mono);">
+                                    {{ unread_count }}
+                                </span>
+                            {% endif %}
+                        </button>
+
+                        <!-- Inbox Dropdown Card -->
+                        <div id="inbox-dropdown" class="profile-dropdown-card" style="right: 0; width: 380px; padding: 20px; top: 50px;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid var(--agency-border); padding-bottom: 10px;">
+                                <h4 style="font-size: 15px; font-weight: 700; color: #ffffff; margin: 0; text-transform: uppercase; letter-spacing: 0.5px;">Inbox</h4>
+                                {% if unread_count > 0 %}
+                                    <form method="POST" style="margin: 0;">
+                                        {% csrf_token %}
+                                        <input type="hidden" name="action" value="clear_notifications">
+                                        <button type="submit" class="scramble-trigger" style="background: none; border: none; color: var(--agency-accent); cursor: pointer; font-size: 10px; font-weight: 600; text-transform: uppercase; padding: 0;">
+                                            <span class="scramble-text">Mark all read</span>
+                                        </button>
+                                    </form>
+                                {% endif %}
+                            </div>
+
+                            <div style="display: flex; flex-direction: column; gap: 10px; max-height: 300px; overflow-y: auto; padding-right: 2px;">
+                                {% if notifications %}
+                                    {% for notif in notifications %}
+                                        <div style="background: {% if notif.is_read %}transparent{% else %}#1f1410{% endif %}; border: 1px solid {% if notif.is_read %}var(--agency-border){% else %}rgba(255, 87, 34, 0.2){% endif %}; border-radius: 10px; padding: 12px; display: flex; flex-direction: column; gap: 8px; transition: all 0.2s ease;">
+                                            <div style="display: flex; justify-content: space-between; align-items: flex-start; gap: 10px;">
+                                                <div style="display: flex; flex-direction: column; gap: 3px; flex-grow: 1;">
+                                                    <span style="font-family: var(--agency-font-mono); font-size: 8px; text-transform: uppercase; letter-spacing: 0.5px; padding: 1px 5px; border-radius: 3px; background: {% if notif.notification_type == 'REQUEST' %}rgba(255, 87, 34, 0.15){% else %}rgba(255,255,255,0.05){% endif %}; color: {% if notif.notification_type == 'REQUEST' %}var(--agency-accent){% else %}var(--agency-text-muted){% endif %}; width: fit-content;">
+                                                        {{ notif.get_notification_type_display }}
+                                                    </span>
+                                                    <p style="color: #ffffff; font-size: 13px; margin: 2px 0 0 0; line-height: 1.3;">{{ notif.message }}</p>
+                                                </div>
+                                                
+                                                {% if not notif.is_read %}
+                                                    <form method="POST" style="margin: 0; flex-shrink: 0;">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="action" value="mark_read">
+                                                        <input type="hidden" name="notification_id" value="{{ notif.id }}">
+                                                        <button type="submit" class="scramble-trigger" style="background: none; border: none; color: var(--agency-accent); cursor: pointer; font-size: 9px; font-weight: 700; text-transform: uppercase; padding: 2px 5px; border: 1px solid var(--agency-accent); border-radius: 4px;" title="Mark as Read">
+                                                            <span class="scramble-text">Read</span>
+                                                        </button>
+                                                    </form>
+                                                {% endif %}
+                                            </div>
+
+                                            {% if notif.notification_type == 'REQUEST' and notif.status == 'PENDING' %}
+                                                <div style="display: flex; gap: 8px; margin-top: 2px;">
+                                                    <form method="POST" style="margin: 0;">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="action" value="respond_request">
+                                                        <input type="hidden" name="notification_id" value="{{ notif.id }}">
+                                                        <input type="hidden" name="response" value="accept">
+                                                        <button type="submit" class="btn-agency-primary scramble-trigger" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; background: #10b981; border-color: #10b981; color: #ffffff;">
+                                                            <span class="scramble-text">Accept</span>
+                                                        </button>
+                                                    </form>
+                                                    <form method="POST" style="margin: 0;">
+                                                        {% csrf_token %}
+                                                        <input type="hidden" name="action" value="respond_request">
+                                                        <input type="hidden" name="notification_id" value="{{ notif.id }}">
+                                                        <input type="hidden" name="response" value="reject">
+                                                        <button type="submit" class="btn-agency-secondary scramble-trigger" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.05);">
+                                                            <span class="scramble-text">Reject</span>
+                                                        </button>
+                                                    </form>
+                                                </div>
+                                            {% endif %}
+                                            <span style="font-size: 9px; color: var(--agency-text-muted); text-align: right;">{{ notif.created_at|timesince }} ago</span>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <div style="text-align: center; padding: 20px 0; color: var(--agency-text-muted); font-size: 13px;">
+                                        No notifications.
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="agency-nav-profile" style="display: flex; align-items: center; gap: 12px; position: relative; cursor: pointer;" onclick="event.stopPropagation(); document.getElementById('profile-dropdown').classList.toggle('active'); document.getElementById('inbox-dropdown').classList.remove('active');">
                         <div class="profile-avatar" style="width: 38px; height: 38px; border-radius: 50%; background: linear-gradient(135deg, #ff5722, #e64a19); display: flex; align-items: center; justify-content: center; font-family: 'Poppins', sans-serif; font-weight: 700; color: #ffffff; font-size: 15px; border: 1.5px solid rgba(255, 255, 255, 0.25); box-shadow: 0 0 10px rgba(255, 87, 34, 0.4); text-transform: uppercase; overflow: hidden;">
                             {% if profile.profile_photo %}
                                 <img src="{{ profile.profile_photo.url }}" alt="Avatar" style="width: 100%; height: 100%; object-fit: cover;">
@@ -3352,12 +3439,18 @@
             });
 
 
-            // Close profile dropdown when clicking outside
+            // Close dropdowns when clicking outside
             document.addEventListener("click", (e) => {
                 const profileContainer = document.querySelector(".agency-nav-profile");
-                const dropdown = document.getElementById("profile-dropdown");
-                if (profileContainer && dropdown && !profileContainer.contains(e.target)) {
-                    dropdown.classList.remove("active");
+                const profileDropdown = document.getElementById("profile-dropdown");
+                const inboxContainer = document.querySelector(".agency-nav-inbox");
+                const inboxDropdown = document.getElementById("inbox-dropdown");
+                
+                if (profileContainer && profileDropdown && !profileContainer.contains(e.target)) {
+                    profileDropdown.classList.remove("active");
+                }
+                if (inboxContainer && inboxDropdown && !inboxContainer.contains(e.target)) {
+                    inboxDropdown.classList.remove("active");
                 }
             });
 

@@ -294,6 +294,16 @@ def studenthome_view(request):
                 Notification.objects.filter(user=request.user).update(is_read=True)
                 success = "Notifications cleared."
 
+            elif action == 'mark_read':
+                notification_id = request.POST.get('notification_id')
+                try:
+                    notification = Notification.objects.get(id=notification_id, user=request.user)
+                    notification.is_read = True
+                    notification.save()
+                    success = "Notification marked as read."
+                except Notification.DoesNotExist:
+                    error = "Notification not found."
+
             elif action == 'leave_team':
                 team_id = request.POST.get('team_id')
                 try:
@@ -313,8 +323,10 @@ def studenthome_view(request):
         teams = request.user.joined_teams.all()
         registered_hackathons = list(request.user.registrations.values_list('hackathon', flat=True))
         notifications = request.user.notifications.all().order_by('-created_at')
+        unread_count = notifications.filter(is_read=False).count()
     else:
         student_id = "HN-2026-9999"
+        unread_count = 0
         
     return render(request, 'studenthome.html', {
         'student_id': student_id,
@@ -322,6 +334,7 @@ def studenthome_view(request):
         'teams': teams,
         'registered_hackathons': registered_hackathons,
         'notifications': notifications,
+        'unread_count': unread_count,
         'error': error,
         'success': success
     })
