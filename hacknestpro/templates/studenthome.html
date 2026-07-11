@@ -2688,8 +2688,8 @@
                                     <form method="POST" style="margin: 0;">
                                         {% csrf_token %}
                                         <input type="hidden" name="action" value="clear_notifications">
-                                        <button type="submit" class="scramble-trigger" style="background: none; border: none; color: var(--agency-accent); cursor: pointer; font-size: 10px; font-weight: 600; text-transform: uppercase; padding: 0;">
-                                            <span class="scramble-text">Mark all read</span>
+                                        <button type="submit" style="background: none; border: none; color: var(--agency-accent); cursor: pointer; font-size: 10px; font-weight: 600; text-transform: uppercase; padding: 0; font-family: 'Poppins', sans-serif; transition: opacity 0.2s;" onmouseover="this.style.opacity='0.8'" onmouseout="this.style.opacity='1'">
+                                            Mark all read
                                         </button>
                                     </form>
                                 {% endif %}
@@ -2729,8 +2729,8 @@
                                                         <input type="hidden" name="action" value="respond_request">
                                                         <input type="hidden" name="notification_id" value="{{ notif.id }}">
                                                         <input type="hidden" name="response" value="accept">
-                                                        <button type="submit" class="btn-agency-primary scramble-trigger" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; background: #10b981; border-color: #10b981; color: #ffffff;">
-                                                            <span class="scramble-text">Accept</span>
+                                                        <button type="submit" style="background: #10b981; border: 1px solid #10b981; color: #ffffff; padding: 6px 12px; font-size: 11px; border-radius: 6px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='#059669'" onmouseout="this.style.background='#10b981'">
+                                                            Accept
                                                         </button>
                                                     </form>
                                                     <form method="POST" style="margin: 0;">
@@ -2738,8 +2738,8 @@
                                                         <input type="hidden" name="action" value="respond_request">
                                                         <input type="hidden" name="notification_id" value="{{ notif.id }}">
                                                         <input type="hidden" name="response" value="reject">
-                                                        <button type="submit" class="btn-agency-secondary scramble-trigger" style="padding: 6px 12px; font-size: 11px; border-radius: 6px; border-color: #ef4444; color: #ef4444; background: rgba(239, 68, 68, 0.05);">
-                                                            <span class="scramble-text">Reject</span>
+                                                        <button type="submit" style="background: rgba(239, 68, 68, 0.05); border: 1px solid #ef4444; color: #ef4444; padding: 6px 12px; font-size: 11px; border-radius: 6px; cursor: pointer; font-family: 'Poppins', sans-serif; font-weight: 600; transition: all 0.2s;" onmouseover="this.style.background='rgba(239, 68, 68, 0.15)'" onmouseout="this.style.background='rgba(239, 68, 68, 0.05)'">
+                                                            Reject
                                                         </button>
                                                     </form>
                                                 </div>
