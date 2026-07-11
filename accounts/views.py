@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login, update_session_auth_hash
 from django.contrib.auth.models import User
 from django.core.mail import send_mail
 from django.conf import settings
-from accounts.models import UserProfile, Team, HackathonRegistration
+from accounts.models import UserProfile, Team, HackathonRegistration, Notification
 from django.db.models import Q
 
 def login_view(request):
@@ -106,6 +106,7 @@ def studenthome_view(request):
     profile = None
     teams = []
     registered_hackathons = []
+    notifications = []
     error = None
     success = None
 
@@ -128,6 +129,23 @@ def studenthome_view(request):
                     )
                     if created_reg:
                         success = f"Successfully registered for '{hackathon}'!"
+                        # Create notification
+                        Notification.objects.create(
+                            user=request.user,
+                            message=f"Successfully registered for the '{hackathon}' hackathon!",
+                            notification_type='INFO'
+                        )
+                        # Send email
+                        try:
+                            send_mail(
+                                subject="HackNest - Hackathon Registration Successful",
+                                message=f"Hi {request.user.first_name or request.user.username},\n\nYou have successfully registered for the '{hackathon}' hackathon on HackNest.\n\nBest of luck,\nThe HackNest Team",
+                                from_email=settings.DEFAULT_FROM_EMAIL,
+                                recipient_list=[request.user.email],
+                                fail_silently=True
+                            )
+                        except Exception as e:
+                            print("Email error:", e)
                     else:
                         error = f"You are already registered for '{hackathon}'."
 
@@ -148,6 +166,24 @@ def studenthome_view(request):
                     )
                     team.members.add(request.user)
                     success = f"Team '{team_name}' created successfully! Share this code with members: {team.code}"
+                    
+                    # Create notification
+                    Notification.objects.create(
+                        user=request.user,
+                        message=f"Successfully created team '{team_name}' for '{hackathon}'! Invite Code: {team.code}",
+                        notification_type='INFO'
+                    )
+                    # Send email
+                    try:
+                        send_mail(
+                            subject=f"HackNest - Team '{team_name}' Created Successfully",
+                            message=f"Hi {request.user.first_name or request.user.username},\n\nYou have successfully created your team '{team_name}' for '{hackathon}' on HackNest.\n\nYour Team Invite Code is: {team.code}\nShare this code with your friends so they can request to join your team!\n\nBest of luck,\nThe HackNest Team",
+                            from_email=settings.DEFAULT_FROM_EMAIL,
+                            recipient_list=[request.user.email],
+                            fail_silently=True
+                        )
+                    except Exception as e:
+                        print("Email error:", e)
             
             elif action == 'join_team':
                 team_code = request.POST.get('team_code', '').strip().upper()
@@ -162,12 +198,102 @@ def studenthome_view(request):
                             error = "You are already a member of this team."
                         elif team.members.count() >= 4:
                             error = "This team is already full (maximum 4 members)."
+                        elif Notification.objects.filter(
+                            user=team.creator,
+                            notification_type='REQUEST',
+                            request_user=request.user,
+                            team=team,
+                            status='PENDING'
+                        ).exists():
+                            error = f"You have already requested to join team '{team.name}'. Please wait for the host to approve."
                         else:
-                            team.members.add(request.user)
-                            success = f"Successfully joined team '{team.name}'!"
+                            # Create Join Request notification for the host
+                            Notification.objects.create(
+                                user=team.creator,
+                                message=f"{request.user.email} has requested to join your team '{team.name}' for '{team.hackathon}'.",
+                                notification_type='REQUEST',
+                                request_user=request.user,
+                                team=team,
+                                status='PENDING'
+                            )
+                            # Create Info notification for the requester
+                            Notification.objects.create(
+                                user=request.user,
+                                message=f"Request to join team '{team.name}' sent to the host.",
+                                notification_type='INFO'
+                            )
+                            success = f"Your request to join team '{team.name}' has been successfully sent to the host!"
                     except Team.DoesNotExist:
                         error = "Invalid invite code. Please check and try again."
             
+            elif action == 'respond_request':
+                notification_id = request.POST.get('notification_id')
+                response_type = request.POST.get('response')
+                
+                try:
+                    notification = Notification.objects.get(id=notification_id, user=request.user)
+                    if notification.notification_type == 'REQUEST' and notification.status == 'PENDING':
+                        team = notification.team
+                        request_user = notification.request_user
+                        
+                        if response_type == 'accept':
+                            if team.members.count() >= 4:
+                                error = "Cannot accept member. Team is already full (maximum 4 members)."
+                            else:
+                                team.members.add(request_user)
+                                notification.status = 'ACCEPTED'
+                                notification.message = f"You accepted {request_user.email} into your team '{team.name}'."
+                                notification.is_read = True
+                                notification.save()
+                                
+                                Notification.objects.create(
+                                    user=request_user,
+                                    message=f"Your request to join team '{team.name}' has been ACCEPTED by the host!",
+                                    notification_type='INFO'
+                                )
+                                success = f"Successfully accepted {request_user.email} into your team!"
+                                
+                                try:
+                                    send_mail(
+                                        subject="HackNest - Team Join Request Approved",
+                                        message=f"Hi {request_user.first_name or request_user.username},\n\nGreat news! Your request to join team '{team.name}' on HackNest has been APPROVED by the host.\n\nLog in now to see your team details: http://127.0.0.1:8000/studenthome/\n\nBest of luck,\nThe HackNest Team",
+                                        from_email=settings.DEFAULT_FROM_EMAIL,
+                                        recipient_list=[request_user.email],
+                                        fail_silently=True
+                                    )
+                                except Exception as e:
+                                    print("Email error:", e)
+                                    
+                        elif response_type == 'reject':
+                            notification.status = 'REJECTED'
+                            notification.message = f"You rejected {request_user.email}'s request to join '{team.name}'."
+                            notification.is_read = True
+                            notification.save()
+                            
+                            Notification.objects.create(
+                                user=request_user,
+                                message=f"Your request to join team '{team.name}' has been REJECTED by the host.",
+                                notification_type='INFO'
+                            )
+                            success = f"You have rejected {request_user.email}'s join request."
+                            
+                            try:
+                                send_mail(
+                                    subject="HackNest - Team Join Request Update",
+                                    message=f"Hi {request_user.first_name or request_user.username},\n\nWe regret to inform you that your request to join team '{team.name}' on HackNest was not accepted by the host.\n\nYou can still try to create a new team or request to join other teams.\n\nBest regards,\nThe HackNest Team",
+                                    from_email=settings.DEFAULT_FROM_EMAIL,
+                                    recipient_list=[request_user.email],
+                                    fail_silently=True
+                                )
+                            except Exception as e:
+                                print("Email error:", e)
+                except Notification.DoesNotExist:
+                    error = "Notification not found."
+
+            elif action == 'clear_notifications':
+                Notification.objects.filter(user=request.user).update(is_read=True)
+                success = "Notifications cleared."
+
             elif action == 'leave_team':
                 team_id = request.POST.get('team_id')
                 try:
@@ -183,9 +309,10 @@ def studenthome_view(request):
                 except Team.DoesNotExist:
                     error = "Team not found."
         
-        # Fetch current user's teams and registered hackathons
+        # Fetch current user's teams, registered hackathons, and notifications
         teams = request.user.joined_teams.all()
         registered_hackathons = list(request.user.registrations.values_list('hackathon', flat=True))
+        notifications = request.user.notifications.all().order_by('-created_at')
     else:
         student_id = "HN-2026-9999"
         
@@ -194,6 +321,7 @@ def studenthome_view(request):
         'profile': profile,
         'teams': teams,
         'registered_hackathons': registered_hackathons,
+        'notifications': notifications,
         'error': error,
         'success': success
     })

@@ -50,3 +50,27 @@ class HackathonRegistration(models.Model):
 
     def __str__(self):
         return f"{self.user.username} registered for {self.hackathon}"
+
+
+class Notification(models.Model):
+    NOTIFICATION_TYPES = (
+        ('INFO', 'Information'),
+        ('REQUEST', 'Join Request'),
+    )
+    STATUS_CHOICES = (
+        ('PENDING', 'Pending'),
+        ('ACCEPTED', 'Accepted'),
+        ('REJECTED', 'Rejected'),
+    )
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='notifications')
+    message = models.TextField()
+    notification_type = models.CharField(max_length=20, choices=NOTIFICATION_TYPES, default='INFO')
+    is_read = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    request_user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True, blank=True, related_name='sent_requests')
+    team = models.ForeignKey(Team, on_delete=models.SET_NULL, null=True, blank=True, related_name='join_requests')
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='PENDING')
+
+    def __str__(self):
+        return f"Notification for {self.user.username}: {self.message[:30]}"
